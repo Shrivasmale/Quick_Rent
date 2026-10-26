@@ -140,11 +140,17 @@ export default function AboutPage({ navigate }) {
         }
         .hero-eyebrow span { width: 6px; height: 6px; border-radius: 50%; background: #FF6B00; display: inline-block; }
         .hero-title {
-          font-size: clamp(2.8rem, 6vw, 5.2rem);
+          font-size: 3.6rem;
           font-weight: 700;
           line-height: 1.1;
           letter-spacing: -1.5px;
           animation: fadeDown 1s ease 0.1s both;
+        }
+        @media (max-width: 860px) {
+          .hero-title { font-size: 2.6rem; }
+        }
+        @media (max-width: 540px) {
+          .hero-title { font-size: 2rem; }
         }
         .hero-title .grad {
           background: linear-gradient(100deg, #FF6B00 30%, #FFB347 80%);
@@ -267,11 +273,14 @@ export default function AboutPage({ navigate }) {
           font-weight: 600;
         }
         .story-heading {
-          font-size: clamp(2rem, 3.5vw, 2.8rem);
+          font-size: 2.4rem;
           font-weight: 700;
           line-height: 1.2;
           letter-spacing: -0.5px;
           margin-bottom: 22px;
+        }
+        @media (max-width: 768px) {
+          .story-heading { font-size: 1.85rem; }
         }
         .story-body { color: #999; line-height: 1.9; font-size: 1rem; }
         .story-body + .story-body { margin-top: 14px; }
@@ -325,9 +334,12 @@ export default function AboutPage({ navigate }) {
           font-weight: 600;
         }
         .section-title {
-          font-size: clamp(1.8rem, 3vw, 2.6rem);
+          font-size: 2.2rem;
           font-weight: 700;
           letter-spacing: -0.5px;
+        }
+        @media (max-width: 768px) {
+          .section-title { font-size: 1.75rem; }
         }
 
         .steps-grid {
@@ -494,12 +506,15 @@ export default function AboutPage({ navigate }) {
           pointer-events: none;
         }
         .cta-title {
-          font-size: clamp(2rem, 4vw, 3.4rem);
+          font-size: 2.8rem;
           font-weight: 700;
           letter-spacing: -1px;
           max-width: 700px;
           margin: auto;
           line-height: 1.2;
+        }
+        @media (max-width: 768px) {
+          .cta-title { font-size: 2rem; }
         }
         .cta-sub { color: #888; margin: 18px auto 40px; max-width: 500px; line-height: 1.8; font-size: 1rem; }
 

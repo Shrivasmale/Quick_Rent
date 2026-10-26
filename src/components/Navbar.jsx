@@ -1,189 +1,444 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../App";
+import { useAuth, useApp } from "../App";
 
 export default function Navbar({ currentPage, navigate, openAuth }) {
   const { user, handleLogout } = useAuth();
+  const { wishlist } = useApp();
   const [scrolled, setScrolled] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 60);
+    const fn = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", fn);
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
   const isHome = currentPage === "home";
-  const isOrange = isHome && !scrolled;
-  const bg = isOrange ? "#FF6B00" : "#fff";
-  const tc = isOrange ? "#fff" : "#1a1a1a";
-  const lc = isOrange ? "#fff" : "#FF6B00";
-  const shadow = isOrange ? "none" : "0 2px 20px rgba(0,0,0,0.09)";
+  const isTransparent = isHome && !scrolled;
+  const navBg = isTransparent ? "rgba(22, 24, 28, 0.45)" : "#ffffff";
+  const navBorder = isTransparent ? "rgba(255, 255, 255, 0.12)" : "#EAEAEA";
+  const textColor = isTransparent ? "#ffffff" : "#22252A";
+  const textMuted = isTransparent ? "rgba(255, 255, 255, 0.85)" : "#555A60";
 
   const role = user?.role || "guest";
 
-  // Renter → Home, Rent Items, About
-  // Lister → Home, Rent Items, List Item, About  (lister can also rent)
-  // Guest  → Home, About
-  const allLinks = [
-    { label: "Home",       page: "home",  roles: ["guest","renter","lister"] },
-    { label: "Rent Items", page: "rent",  roles: ["renter","lister"] },
-    { label: "List Item",  page: "list",  roles: ["lister"] },
-    { label: "About",      page: "about", roles: ["guest","renter","lister"] },
+  const links = [
+    { label: "Home", page: "home" },
+    { label: "Store", page: "rent" },
+    { label: "Products", page: "rent" },
+    { label: "About Us", page: "about" },
+    { label: "Blog", page: "home", targetId: "blog-section" },
+    { label: "Contact Us", page: "about" },
   ];
-  const links = allLinks.filter(l => l.roles.includes(role));
 
-  const S = {
-    nav:`position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:68px;transition:background .35s,box-shadow .35s;`,
+  const handleLinkClick = (link) => {
+    if (link.targetId && currentPage === "home") {
+      const el = document.getElementById(link.targetId);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate(link.page);
+      if (link.targetId) {
+        setTimeout(() => {
+          const el = document.getElementById(link.targetId);
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        }, 150);
+      }
+    }
+    setMenuOpen(false);
   };
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
-        *{margin:0;padding:0;box-sizing:border-box;}
-        .qr-nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:68px;transition:background .35s,box-shadow .35s;}
-        .qr-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;cursor:pointer;letter-spacing:-0.5px;transition:color .35s;white-space:nowrap;}
-        .qr-links{display:flex;gap:28px;list-style:none;}
-        .qr-link{cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.92rem;font-weight:500;padding-bottom:3px;transition:all .2s;border-bottom:2px solid transparent;}
-        .qr-link:hover{opacity:.7;}
-        .qr-link.active{border-bottom-color:currentColor;}
-        .qr-actions{display:flex;gap:10px;align-items:center;}
-        .qr-btn-login{padding:8px 20px;border-radius:50px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;font-size:0.88rem;background:transparent;transition:all .2s;}
-        .qr-btn-signup{padding:8px 20px;border-radius:50px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.88rem;border:none;transition:all .2s;}
-        .qr-btn-login:hover{opacity:.8;}
-        .qr-btn-signup:hover{opacity:.85;transform:translateY(-1px);}
-
-        /* Profile */
-        .qr-profile-wrap{position:relative;}
-        .qr-profile-btn{width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;border:2px solid;}
-        .qr-profile-btn:hover{transform:scale(1.06);}
-        .qr-dropdown{position:absolute;top:52px;right:0;background:#fff;border-radius:16px;min-width:215px;box-shadow:0 8px 40px rgba(0,0,0,0.13);overflow:hidden;animation:qrDrop .2s ease;}
-        @keyframes qrDrop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-        .qr-dd-head{padding:15px 20px;background:#fff8f5;border-bottom:1px solid #ffe0cc;}
-        .qr-dd-name{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#1a1a1a;}
-        .qr-dd-role{font-size:0.74rem;color:#FF6B00;margin-top:3px;font-weight:600;text-transform:capitalize;}
-        .qr-dd-item{padding:11px 20px;font-size:0.87rem;cursor:pointer;font-family:'DM Sans',sans-serif;color:#333;transition:background .15s;}
-        .qr-dd-item:hover{background:#fff5ee;color:#FF6B00;}
-        .qr-dd-item.danger{color:#e53e3e;}
-        .qr-dd-item.danger:hover{background:#fff5f5;}
-
-        /* Hamburger */
-        .qr-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
-        .qr-burger span{display:block;width:24px;height:2px;border-radius:2px;transition:all .3s;}
-
-        /* Mobile menu */
-        .qr-mobile{position:fixed;top:68px;left:0;right:0;background:#fff;padding:12px 0 8px;box-shadow:0 8px 24px rgba(0,0,0,0.11);z-index:999;animation:qrDrop .2s ease;}
-        .qr-mobile-link{display:block;padding:13px 28px;font-family:'DM Sans',sans-serif;font-size:0.98rem;font-weight:500;color:#1a1a1a;cursor:pointer;transition:background .15s;border-left:3px solid transparent;}
-        .qr-mobile-link:hover,.qr-mobile-link.active{background:#fff5ee;color:#FF6B00;border-left-color:#FF6B00;}
-        .qr-mobile-auth{padding:14px 28px;display:flex;gap:10px;border-top:1px solid #f0f0f0;margin-top:6px;}
-
-        @media(max-width:768px){
-          .qr-nav{padding:0 20px;}
-          .qr-links{display:none;}
-          .qr-btn-login,.qr-btn-signup{display:none;}
-          .qr-burger{display:flex;}
+        .site-nav {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 1000;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 4vw;
+          height: 72px;
+          transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+          border-bottom: 1px solid transparent;
+        }
+        .site-logo {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          cursor: pointer;
+          user-select: none;
+        }
+        .logo-badge {
+          width: 38px;
+          height: 38px;
+          background: #E24B36;
+          border-radius: 9px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #ffffff;
+          font-weight: 800;
+          font-size: 1.15rem;
+          box-shadow: 0 3px 8px rgba(226, 75, 54, 0.35);
+        }
+        .logo-text {
+          font-size: 1.25rem;
+          font-weight: 700;
+          letter-spacing: -0.3px;
+        }
+        .logo-text span {
+          color: #E24B36;
+        }
+        .nav-links {
+          display: flex;
+          align-items: center;
+          gap: 32px;
+          list-style: none;
+        }
+        .nav-link-btn {
+          background: none;
+          border: none;
+          font-size: 0.95rem;
+          font-weight: 500;
+          cursor: pointer;
+          padding: 6px 0;
+          transition: color 0.15s ease, opacity 0.15s ease;
+        }
+        .nav-link-btn:hover {
+          color: #E24B36 !important;
+        }
+        .nav-actions {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+        .cart-pill {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 7px 14px;
+          border-radius: 20px;
+          font-size: 0.88rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .cart-pill-count {
+          background: #E24B36;
+          color: #fff;
+          font-size: 0.72rem;
+          font-weight: 700;
+          padding: 2px 7px;
+          border-radius: 10px;
+        }
+        .nav-auth-btn {
+          padding: 8px 20px;
+          border-radius: 6px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .btn-outline {
+          background: transparent;
+          border: 1.5px solid currentColor;
+        }
+        .btn-filled {
+          background: #E24B36;
+          color: #ffffff !important;
+          border: 1.5px solid #E24B36;
+        }
+        .btn-filled:hover {
+          background: #C93C29;
+          border-color: #C93C29;
+        }
+        .user-avatar-btn {
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #E24B36;
+          color: #fff;
+          font-weight: 700;
+          font-size: 0.95rem;
+          border: none;
+        }
+        .nav-dropdown {
+          position: absolute;
+          top: 70px;
+          right: 4vw;
+          background: #ffffff;
+          border: 1px solid #EAEAEA;
+          border-radius: 10px;
+          min-width: 220px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+          overflow: hidden;
+          z-index: 1001;
+        }
+        .nav-dd-header {
+          padding: 14px 18px;
+          background: #FAF9F8;
+          border-bottom: 1px solid #EAEAEA;
+        }
+        .nav-dd-name {
+          font-weight: 700;
+          font-size: 0.95rem;
+          color: #1A1D20;
+        }
+        .nav-dd-role {
+          font-size: 0.78rem;
+          color: #E24B36;
+          margin-top: 2px;
+          font-weight: 600;
+        }
+        .nav-dd-item {
+          padding: 10px 18px;
+          font-size: 0.9rem;
+          color: #333;
+          cursor: pointer;
+          transition: background 0.15s ease;
+        }
+        .nav-dd-item:hover {
+          background: #FDF1EF;
+          color: #E24B36;
+        }
+        .nav-dd-danger {
+          color: #D32F2F;
+        }
+        .nav-dd-danger:hover {
+          background: #FFEBEE;
+        }
+        .nav-burger {
+          display: none;
+          background: none;
+          border: none;
+          cursor: pointer;
+          flex-direction: column;
+          gap: 5px;
+          padding: 6px;
+        }
+        .nav-burger span {
+          display: block;
+          width: 24px;
+          height: 2px;
+          background: currentColor;
+          border-radius: 2px;
+        }
+        .mobile-drawer {
+          position: fixed;
+          top: 72px;
+          left: 0;
+          right: 0;
+          background: #ffffff;
+          border-bottom: 1px solid #EAEAEA;
+          padding: 16px 24px 24px;
+          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+          z-index: 999;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .mobile-link-item {
+          padding: 10px 0;
+          font-size: 1rem;
+          font-weight: 600;
+          color: #22252A;
+          border-bottom: 1px solid #F0F0EE;
+          cursor: pointer;
+        }
+        @media (max-width: 860px) {
+          .nav-links { display: none; }
+          .nav-burger { display: flex; }
+          .cart-pill span:not(.cart-pill-count) { display: none; }
         }
       `}</style>
 
-      <nav className="qr-nav" style={{ background: bg, boxShadow: shadow }}>
-        <span className="qr-logo" style={{ color: lc }} onClick={() => navigate("home")}>
-          QuickRent
-        </span>
+      <nav
+        className="site-nav"
+        style={{
+          backgroundColor: navBg,
+          borderBottomColor: navBorder,
+          boxShadow: isTransparent ? "none" : "0 2px 14px rgba(0, 0, 0, 0.06)",
+        }}
+      >
+        {/* Logo */}
+        <div className="site-logo" onClick={() => navigate("home")}>
+          <div className="logo-badge">Q</div>
+          <div className="logo-text" style={{ color: textColor }}>
+            Quick<span>Rent</span>
+          </div>
+        </div>
 
-        {/* Desktop links */}
-        <ul className="qr-links">
-          {links.map(({ label, page }) => (
-            <li key={page} className={`qr-link ${currentPage === page ? "active" : ""}`}
-              style={{ color: tc }} onClick={() => navigate(page)}>
-              {label}
+        {/* Center Links */}
+        <ul className="nav-links">
+          {links.map((link) => (
+            <li key={link.label}>
+              <button
+                className="nav-link-btn"
+                style={{
+                  color: textMuted,
+                  borderBottom: currentPage === link.page && !link.targetId ? "2px solid #E24B36" : "2px solid transparent",
+                }}
+                onClick={() => handleLinkClick(link)}
+              >
+                {link.label}
+              </button>
             </li>
           ))}
         </ul>
 
-        {/* Desktop auth / profile */}
-        <div className="qr-actions">
+        {/* Right Actions */}
+        <div className="nav-actions">
+          {/* Cart / Wishlist indicator */}
+          <div
+            className="cart-pill"
+            style={{
+              backgroundColor: isTransparent ? "rgba(255, 255, 255, 0.15)" : "#F8F8F7",
+              color: textColor,
+              border: `1px solid ${isTransparent ? "rgba(255,255,255,0.2)" : "#EAEAEA"}`,
+            }}
+            onClick={() => navigate("rent")}
+            title="View saved rentals"
+          >
+            <span>Rentals</span>
+            <span className="cart-pill-count">{wishlist ? wishlist.length : 0}</span>
+          </div>
+
           {!user ? (
             <>
-              <button className="qr-btn-login"
-                style={{ color: isOrange ? "#fff" : "#FF6B00", border: `2px solid ${isOrange ? "rgba(255,255,255,0.55)" : "#FF6B00"}` }}
-                onClick={() => openAuth("login")}>Login</button>
-              <button className="qr-btn-signup"
-                style={{ background: isOrange ? "#fff" : "#FF6B00", color: isOrange ? "#FF6B00" : "#fff" }}
-                onClick={() => openAuth("signup")}>Sign Up</button>
+              <button
+                className="nav-auth-btn btn-outline"
+                style={{ color: textColor }}
+                onClick={() => openAuth("login")}
+              >
+                Login
+              </button>
+              <button
+                className="nav-auth-btn btn-filled"
+                onClick={() => openAuth("signup")}
+              >
+                Sign Up
+              </button>
             </>
           ) : (
-            <div className="qr-profile-wrap">
-              <div className="qr-profile-btn"
-                style={{ background: isOrange ? "#fff" : "#FF6B00", borderColor: isOrange ? "rgba(255,255,255,0.4)" : "#FF6B00" }}
-                onClick={() => setProfileOpen(p => !p)}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="8" r="4" fill={isOrange ? "#FF6B00" : "#fff"} />
-                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke={isOrange ? "#FF6B00" : "#fff"} strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              </div>
+            <div style={{ position: "relative" }}>
+              <button
+                className="user-avatar-btn"
+                onClick={() => setProfileOpen((prev) => !prev)}
+                title={user.name}
+              >
+                {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+              </button>
 
               {profileOpen && (
-                <div className="qr-dropdown" onClick={() => setProfileOpen(false)}>
-                  <div className="qr-dd-head">
-                    <div className="qr-dd-name">{user.name}</div>
-                    <div className="qr-dd-role">
-                      {role === "lister" ? "🏠 Lister" : "🔑 Renter"}
+                <div className="nav-dropdown" onClick={() => setProfileOpen(false)}>
+                  <div className="nav-dd-header">
+                    <div className="nav-dd-name">{user.name}</div>
+                    <div className="nav-dd-role">
+                      {role === "lister" ? "Verified Lister" : "Active Renter"}
                     </div>
                   </div>
-                  <div className="qr-dd-item" onClick={() => navigate("profile")}>👤 My Dashboard</div>
-                  {role === "renter" && <>
-                    <div className="qr-dd-item" onClick={() => navigate("profile")}>📦 My Rentals</div>
-                    <div className="qr-dd-item" onClick={() => navigate("profile")}>❤️ Wishlist</div>
-                  </>}
-                  {role === "lister" && <>
-                    <div className="qr-dd-item" onClick={() => navigate("profile")}>📋 My Listings</div>
-                    <div className="qr-dd-item" onClick={() => navigate("profile")}>📬 Rental Requests</div>
-                  </>}
-                  <div className="qr-dd-item" onClick={() => navigate("profile")}>⚙️ Settings</div>
-                  <div className="qr-dd-item danger" onClick={() => { handleLogout(); setProfileOpen(false); }}>🚪 Logout</div>
+                  <div className="nav-dd-item" onClick={() => navigate("profile")}>
+                    My Dashboard
+                  </div>
+                  <div className="nav-dd-item" onClick={() => navigate("rent")}>
+                    Browse Catalog
+                  </div>
+                  {role === "lister" && (
+                    <div className="nav-dd-item" onClick={() => navigate("list")}>
+                      List an Item
+                    </div>
+                  )}
+                  <div
+                    className="nav-dd-item nav-dd-danger"
+                    onClick={() => {
+                      handleLogout();
+                      setProfileOpen(false);
+                    }}
+                  >
+                    Logout
+                  </div>
                 </div>
               )}
             </div>
           )}
 
-          {/* Hamburger */}
-          <button className="qr-burger" onClick={() => setMenuOpen(m => !m)}>
-            <span style={{ background: tc }} />
-            <span style={{ background: tc }} />
-            <span style={{ background: tc }} />
+          {/* Mobile hamburger */}
+          <button
+            className="nav-burger"
+            style={{ color: textColor }}
+            onClick={() => setMenuOpen((m) => !m)}
+            aria-label="Toggle navigation menu"
+          >
+            <span />
+            <span />
+            <span />
           </button>
         </div>
       </nav>
 
-      {/* Mobile menu */}
+      {/* Mobile Drawer */}
       {menuOpen && (
-        <div className="qr-mobile">
-          {links.map(({ label, page }) => (
-            <div key={page} className={`qr-mobile-link ${currentPage === page ? "active" : ""}`}
-              onClick={() => { navigate(page); setMenuOpen(false); }}>
-              {label}
+        <div className="mobile-drawer">
+          {links.map((link) => (
+            <div
+              key={link.label}
+              className="mobile-link-item"
+              onClick={() => handleLinkClick(link)}
+            >
+              {link.label}
             </div>
           ))}
           {!user ? (
-            <div className="qr-mobile-auth">
-              <button onClick={() => { openAuth("login"); setMenuOpen(false); }}
-                style={{ flex:1,padding:"10px",borderRadius:50,border:"2px solid #FF6B00",background:"transparent",color:"#FF6B00",fontFamily:"'DM Sans',sans-serif",fontWeight:600,cursor:"pointer",fontSize:"0.9rem" }}>
+            <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+              <button
+                className="nav-auth-btn btn-outline"
+                style={{ flex: 1, padding: "10px", color: "#22252A", borderColor: "#CCC" }}
+                onClick={() => {
+                  openAuth("login");
+                  setMenuOpen(false);
+                }}
+              >
                 Login
               </button>
-              <button onClick={() => { openAuth("signup"); setMenuOpen(false); }}
-                style={{ flex:1,padding:"10px",borderRadius:50,border:"none",background:"#FF6B00",color:"#fff",fontFamily:"'DM Sans',sans-serif",fontWeight:600,cursor:"pointer",fontSize:"0.9rem" }}>
+              <button
+                className="nav-auth-btn btn-filled"
+                style={{ flex: 1, padding: "10px" }}
+                onClick={() => {
+                  openAuth("signup");
+                  setMenuOpen(false);
+                }}
+              >
                 Sign Up
               </button>
             </div>
           ) : (
-            <div className="qr-mobile-auth" style={{ justifyContent:"space-between", alignItems:"center" }}>
-              <div>
-                <div style={{ fontFamily:"'Syne',sans-serif",fontWeight:700,color:"#1a1a1a",fontSize:"0.95rem" }}>{user.name}</div>
-                <div style={{ fontFamily:"'DM Sans',sans-serif",fontSize:"0.78rem",color:"#FF6B00",fontWeight:600 }}>{role === "lister" ? "🏠 Lister" : "🔑 Renter"}</div>
-              </div>
-              <button onClick={() => { handleLogout(); setMenuOpen(false); }}
-                style={{ padding:"8px 16px",borderRadius:50,border:"2px solid #e53e3e",background:"transparent",color:"#e53e3e",fontFamily:"'DM Sans',sans-serif",fontWeight:600,cursor:"pointer",fontSize:"0.85rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "10px" }}>
+              <div style={{ fontWeight: 600, color: "#1A1D20" }}>{user.name}</div>
+              <button
+                className="nav-auth-btn btn-filled"
+                onClick={() => {
+                  navigate("profile");
+                  setMenuOpen(false);
+                }}
+              >
+                Dashboard
+              </button>
+              <button
+                className="nav-auth-btn btn-outline"
+                style={{ color: "#D32F2F", borderColor: "#D32F2F" }}
+                onClick={() => {
+                  handleLogout();
+                  setMenuOpen(false);
+                }}
+              >
                 Logout
               </button>
             </div>
