@@ -1,32 +1,10 @@
 // frontend/src/utils/generateReceipt.js
-import { supabase } from "../lib/supabaseClient";
 
 /**
- * Downloads a tamper-proof rental receipt.
- * First requests a 60-second signed URL from the private `rental-receipts` bucket.
- * Falls back to browser print document if offline.
+ * Downloads / prints an official rental receipt for the user.
+ * Generates a clean, printable invoice document locally.
  */
-export async function downloadRentalReceipt(rental, user) {
-  const rentalId = rental.id || "contract";
-  const userId = user?.id || rental.renter_id || "guest";
-  const filePath = `${userId}/receipt_${rentalId}.pdf`;
-
-  try {
-    const { data, error } = await supabase.storage
-      .from("rental-receipts")
-      .createSignedUrl(filePath, 60, {
-        download: `QuickRent-Receipt-${rental.receipt_id || rentalId.slice(0, 8)}.pdf`,
-      });
-
-    if (!error && data?.signedUrl) {
-      window.open(data.signedUrl, "_blank", "noopener,noreferrer");
-      return;
-    }
-  } catch (err) {
-    console.warn("Storage signed URL fallback triggered:", err);
-  }
-
-  // Fallback: Generate printable receipt
+export function downloadRentalReceipt(rental, user) {
   const receiptWindow = window.open("", "_blank", "width=800,height=900");
   if (!receiptWindow) return;
 
@@ -57,13 +35,13 @@ export async function downloadRentalReceipt(rental, user) {
     <div class="row"><span>Receipt ID</span><strong>${rental.receipt_id || rental.receiptId || "QR-" + Date.now().toString().slice(-8)}</strong></div>
     <div class="row"><span>Item</span><strong>${rental.item_title || rental.itemTitle || "Rented Item"}</strong></div>
     <div class="row"><span>Renter</span><strong>${rental.renter_name || rental.renterName || user?.name || "Customer"}</strong></div>
-    <div class="row"><span>Duration</span><strong>${rental.days || 1} day(s) (${rental.start_date || rental.startDate} to ${rental.end_date || rental.endDate})</strong></div>
-    <div class="row"><span>Rent Total</span><strong>₹${rental.rent_total || rental.totalPrice || 0}</strong></div>
-    <div class="row"><span>Security Deposit</span><strong>₹${rental.deposit || rental.security_deposit_paise / 100 || 0}</strong></div>
+    <div class="row"><span>Duration</span><strong>${rental.days || 1} day(s) (${rental.start_date || rental.startDate || "Today"} to ${rental.end_date || rental.endDate || "Ongoing"})</strong></div>
+    <div class="row"><span>Rent Total</span><strong>₹${rental.rent_total || rental.totalPrice || rental.total_price || 0}</strong></div>
+    <div class="row"><span>Security Deposit</span><strong>₹${rental.deposit || (rental.security_deposit_paise ? rental.security_deposit_paise / 100 : 0)}</strong></div>
     <div class="row"><span>Platform Fee</span><strong>₹${rental.platform_fee || rental.platformFee || 0}</strong></div>
-    <div class="row total"><span>Total Paid</span><span>₹${rental.grand_total || rental.grandTotal || rental.total_amount_paise / 100 || 0}</span></div>
+    <div class="row total"><span>Total Paid</span><span>₹${rental.grand_total || rental.grandTotal || rental.total_price || (rental.total_amount_paise ? rental.total_amount_paise / 100 : 0)}</span></div>
     <div class="footer">
-      QuickRent Marketplace · Protected by 256-bit Encryption · Verified via Supabase
+      QuickRent Marketplace · Official Digital Rental Invoice
     </div>
   </div>
 </body>

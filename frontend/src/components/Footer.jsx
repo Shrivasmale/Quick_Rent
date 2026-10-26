@@ -94,9 +94,9 @@ export default function Footer({ navigate }) {
       <div className="max-w-6xl mx-auto pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-brand-muted gap-2">
         <div>© {new Date().getFullYear()} QuickRent Marketplace Inc. All rights reserved.</div>
         <div className="flex items-center gap-4">
-          <span>Serverless Microservices</span>
+          <span>Local Client Application</span>
           <span>·</span>
-          <span>Supabase PostgreSQL + RLS</span>
+          <span>React 19 + Tailwind CSS</span>
         </div>
       </div>
     </footer>

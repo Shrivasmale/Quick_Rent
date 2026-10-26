@@ -10,10 +10,6 @@
     "dev": "npm --prefix frontend run dev",
     "build": "npm --prefix frontend run build",
     "lint": "npm --prefix frontend run lint",
-    "preview": "npm --prefix frontend run preview",
-    "supabase:start": "supabase start",
-    "supabase:stop": "supabase stop",
-    "supabase:status": "supabase status",
-    "supabase:test:rls": "supabase test db"
+    "preview": "npm --prefix frontend run preview"
   }
 }
