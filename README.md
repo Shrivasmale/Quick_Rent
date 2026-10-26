@@ -1,20 +1,43 @@
-<<<<<<< HEAD
-# React + Vite
+# QuickRent (React + Tailwind CSS)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+QuickRent is a high-performance rental marketplace built as a pure client-side application powered by **React 19, Tailwind CSS, and Vite** using local state and persistent storage (`localStorage`).
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 1. System Architecture
 
-## React Compiler
-## tushar change
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend Client:** React 19 Single Page Application with Tailwind CSS and Vite.
+- **State Management:** Fully responsive local client state and `localStorage` caching for items, rentals, and user profiles.
+- **Security & Privacy:** Zero external backend calls; runs completely offline and locally.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# Quick_Rent
->>>>>>> 91dd3d0f063678105b73971d25c68e997f02d9a5
+## 2. Directory Structure
+
+```
+Quickrent/
+└── frontend/                   # React + Tailwind CSS client application
+    ├── src/
+    │   ├── components/         # Shared UI components (Navbar, Footer, AuthModal, ListingCard)
+    │   ├── context/            # Local AuthContext for session & profile management
+    │   ├── hooks/              # Query hooks (useItems, useRentals, useLocalStorage)
+    │   ├── middleware/         # ErrorBoundary & ProtectedRoute
+    │   ├── pages/              # Application pages (Hero, Rent, List, Profile, Legal)
+    │   └── utils/              # Printable receipt generator
+    ├── tailwind.config.js      # QuickRent brand color palette & design tokens
+    └── vercel.json             # SPA rewrites & security headers
+```
+
+---
+
+## 3. Getting Started Locally
+
+### Prerequisites
+- Node.js >= 20.0.0
+- npm >= 10.0.0
+
+### Run Local Frontend
+```bash
+npm run dev
+```
+Open [http://localhost:5173](http://localhost:5173) in your browser.
