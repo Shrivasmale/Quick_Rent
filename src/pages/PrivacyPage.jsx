@@ -2,30 +2,28 @@ export default function PrivacyPage() {
   return (
     <>
       <style>{`
-        .privacy-page { padding-top: 84px; min-height: 100vh; background: linear-gradient(180deg, #f9fafb 0%, #ffffff 45%, #f4f5f7 100%); font-family: 'DM Sans', sans-serif; }
-        .privacy-hero { max-width: 1080px; margin: 0 auto; padding: 48px 32px 40px; background: linear-gradient(135deg, #15171d 0%, #2d343f 100%); border-radius: 32px; box-shadow: 0 30px 80px rgba(15, 23, 42, 0.16); position: relative; overflow: hidden; }
-        .privacy-hero::before { content: ""; position: absolute; top: -24px; right: -90px; width: 220px; height: 220px; background: rgba(255, 107, 0, 0.14); border-radius: 50%; }
-        .privacy-hero::after { content: ""; position: absolute; bottom: -36px; left: -80px; width: 210px; height: 210px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; }
-        .privacy-badge { display: inline-flex; align-items: center; justify-content: center; padding: 10px 16px; border-radius: 999px; background: rgba(255, 107, 0, 0.16); color: #ffb37a; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 24px; }
-        .privacy-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.4rem, 4vw, 3.6rem); color: #fff; margin: 0 0 18px; line-height: 1.02; }
-        .privacy-hero p { max-width: 760px; color: rgba(255, 255, 255, 0.78); line-height: 1.9; font-size: 1.05rem; margin: 0; }
+        .privacy-page { padding-top: 84px; min-height: 100vh; background: #FAF9F8; font-family: var(--font-sans); }
+        .privacy-hero { max-width: 1080px; margin: 0 auto; padding: 48px 32px 40px; background: #1A1D20; border-radius: 24px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12); position: relative; overflow: hidden; }
+        .privacy-badge { display: inline-flex; align-items: center; justify-content: center; padding: 8px 16px; border-radius: 20px; background: rgba(226, 75, 54, 0.2); color: #FF8A7A; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; }
+        .privacy-hero h1 { font-family: var(--font-heading); font-size: 3rem; color: #fff; margin: 0 0 18px; line-height: 1.15; font-weight: 700; }
+        .privacy-hero p { max-width: 760px; color: rgba(255, 255, 255, 0.82); line-height: 1.8; font-size: 1.05rem; margin: 0; }
         .privacy-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 34px; }
-        .privacy-card { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 24px; padding: 24px; color: #f5f5f5; box-shadow: 0 14px 34px rgba(0,0,0,0.08); }
-        .privacy-card strong { display: block; font-family: 'Syne', sans-serif; font-size: 1.04rem; margin-bottom: 10px; }
-        .privacy-card p { margin: 0; color: rgba(255, 255, 255, 0.78); line-height: 1.75; font-size: 0.95rem; }
+        .privacy-card { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 24px; color: #f5f5f5; }
+        .privacy-card strong { display: block; font-size: 1.05rem; margin-bottom: 8px; font-weight: 700; }
+        .privacy-card p { margin: 0; color: rgba(255, 255, 255, 0.78); line-height: 1.7; font-size: 0.92rem; }
         .privacy-body { max-width: 1080px; margin: 0 auto; padding: 42px 32px 80px; }
         .privacy-section { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
-        .privacy-panel { background: #fff; border-radius: 24px; padding: 28px 32px; box-shadow: 0 22px 42px rgba(15, 23, 42, 0.06); }
-        .privacy-panel h2 { font-family: 'Syne', sans-serif; font-size: 1.4rem; margin-bottom: 14px; color: #111827; }
-        .privacy-panel p { margin: 0 0 14px; color: #374151; line-height: 1.8; font-size: 0.96rem; }
-        .privacy-panel ul { padding-left: 20px; margin: 0; color: #374151; }
-        .privacy-panel ul li { margin-bottom: 12px; line-height: 1.75; }
+        .privacy-panel { background: #fff; border-radius: 16px; padding: 28px 32px; border: 1px solid #ECECEB; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04); }
+        .privacy-panel h2 { font-size: 1.35rem; margin-bottom: 14px; color: #111827; font-weight: 700; }
+        .privacy-panel p { margin: 0 0 14px; color: #4B5563; line-height: 1.75; font-size: 0.95rem; }
+        .privacy-panel ul { padding-left: 20px; margin: 0; color: #4B5563; }
+        .privacy-panel ul li { margin-bottom: 10px; line-height: 1.7; font-size: 0.92rem; }
         .privacy-cta { max-width: 1080px; margin: 0 auto; padding: 0 32px 40px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-        .privacy-cta p { margin: 0; color: #4b5563; font-size: 0.96rem; line-height: 1.75; }
-        .privacy-cta a { display: inline-flex; align-items: center; justify-content: center; padding: 14px 24px; background: #FF6B00; color: #fff; border-radius: 999px; text-decoration: none; font-weight: 700; transition: transform 0.2s, box-shadow 0.2s; }
-        .privacy-cta a:hover { transform: translateY(-2px); box-shadow: 0 16px 32px rgba(255, 107, 0, 0.25); }
+        .privacy-cta p { margin: 0; color: #4b5563; font-size: 0.95rem; line-height: 1.7; }
+        .privacy-cta a { display: inline-flex; align-items: center; justify-content: center; padding: 12px 26px; background: #E24B36; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700; transition: background 0.2s; }
+        .privacy-cta a:hover { background: #C93C29; }
         @media (max-width: 960px) { .privacy-summary, .privacy-section { grid-template-columns: 1fr; } .privacy-cta { flex-direction: column; align-items: stretch; text-align: center; } }
-        @media (max-width: 720px) { .privacy-hero { padding: 36px 20px 28px; } .privacy-body { padding: 32px 20px 70px; } }
+        @media (max-width: 720px) { .privacy-hero { padding: 36px 20px 28px; } .privacy-hero h1 { font-size: 2.1rem; } .privacy-body { padding: 32px 20px 70px; } }
       `}</style>
       <div className="privacy-page">
         <section className="privacy-hero">

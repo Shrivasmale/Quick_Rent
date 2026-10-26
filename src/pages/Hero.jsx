@@ -1,529 +1,1369 @@
-// import { useApp, useAuth } from "../App";
-
-// const CATEGORY_ICONS = {
-//   "Electronics": "📷", "Vehicles": "🏍️", "Party & Events": "🎉",
-//   "Sports & Outdoor": "⛺", "Tools & Equipment": "🔧", "Furniture & Appliances": "🛋️",
-// };
-
-// export default function Hero({ navigate }) {
-//   const { items } = useApp();
-//   const { user } = useAuth();
-
-//   const topItems = [...items].sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating)).slice(0, 10);
-//   const marqueeItems = [...topItems, ...topItems]; // duplicate for infinite scroll
-
-//   return (
-//     <>
-//       <style>{`
-//         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
-//         @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-//         @keyframes scrollB{0%,100%{transform:translateY(0);opacity:1}80%{transform:translateY(8px);opacity:0.3}}
-//         @keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-
-//         .hero{min-height:100vh;background:#FF6B00;display:flex;flex-direction:column;justify-content:center;padding:120px 48px 80px;position:relative;overflow:hidden;}
-//         .hero::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;border-radius:50%;background:rgba(255,255,255,0.06);pointer-events:none;}
-//         .hero::after{content:'';position:absolute;bottom:-150px;right:200px;width:350px;height:350px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;}
-
-//         .h-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);color:#fff;padding:6px 16px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:0.83rem;font-weight:500;margin-bottom:26px;width:fit-content;animation:fadeUp .6s both;}
-//         .h-tag span{width:7px;height:7px;border-radius:50%;background:#fff;display:block;}
-//         .h-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(3rem,8vw,6.5rem);color:#fff;line-height:1;letter-spacing:-2px;animation:fadeUp .6s .1s both;}
-//         .h-title .dark{color:#1a1a1a;}
-//         .h-sub{font-family:'DM Sans',sans-serif;font-size:1.1rem;color:rgba(255,255,255,0.82);margin-top:22px;font-weight:300;max-width:460px;line-height:1.65;animation:fadeUp .6s .2s both;}
-//         .h-actions{display:flex;gap:14px;margin-top:44px;flex-wrap:wrap;animation:fadeUp .6s .3s both;}
-//         .h-btn1{padding:15px 34px;background:#1a1a1a;color:#fff;border:none;border-radius:50px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.97rem;cursor:pointer;transition:all .2s;}
-//         .h-btn1:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.28);}
-//         .h-btn2{padding:15px 34px;background:rgba(255,255,255,0.15);color:#fff;border:2px solid rgba(255,255,255,0.38);border-radius:50px;font-family:'Syne',sans-serif;font-weight:600;font-size:0.97rem;cursor:pointer;transition:all .2s;}
-//         .h-btn2:hover{background:rgba(255,255,255,0.25);transform:translateY(-2px);}
-//         .h-stats{display:flex;gap:48px;margin-top:64px;flex-wrap:wrap;animation:fadeUp .6s .4s both;}
-//         .h-stat-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:#fff;line-height:1;}
-//         .h-stat-lbl{font-family:'DM Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.65);margin-top:3px;}
-
-//         /* Float cards */
-//         .h-floats{position:absolute;right:5%;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;animation:fadeUp .7s .5s both;}
-//         .h-card{background:#fff;border-radius:18px;padding:18px 22px;box-shadow:0 8px 32px rgba(0,0,0,0.10);min-width:230px;transition:transform .2s;}
-//         .h-card:hover{transform:translateY(-3px);}
-//         .h-card-lbl{font-family:'DM Sans',sans-serif;font-size:0.72rem;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
-//         .h-card-val{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:#1a1a1a;}
-//         .h-card-sub{font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#888;margin-top:2px;}
-//         .h-badge{display:inline-block;border-radius:50px;padding:2px 10px;font-size:0.72rem;font-weight:600;margin-top:7px;}
-
-//         /* Scroll hint */
-//         .h-scroll{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;animation:fadeUp .6s .8s both;}
-//         .h-scroll span{font-family:'DM Sans',sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:2px;}
-//         .h-scroll-dot{width:22px;height:38px;border:2px solid rgba(255,255,255,0.38);border-radius:11px;display:flex;justify-content:center;padding-top:5px;}
-//         .h-scroll-dot::after{content:'';width:4px;height:7px;background:#fff;border-radius:2px;animation:scrollB 1.5s infinite;}
-
-//         /* Marquee */
-//         .marquee-section{background:#1a1a1a;padding:20px 0;overflow:hidden;}
-//         .marquee-label{font-family:'DM Sans',sans-serif;font-size:0.7rem;color:#666;text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:12px;}
-//         .marquee-track{display:flex;animation:marqueeScroll 30s linear infinite;}
-//         .marquee-track:hover{animation-play-state:paused;}
-//         .marquee-item{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border-radius:50px;padding:10px 20px;margin:0 8px;white-space:nowrap;cursor:pointer;transition:background .2s;flex-shrink:0;}
-//         .marquee-item:hover{background:rgba(255,107,0,0.2);}
-//         .marquee-icon{font-size:1.2rem;}
-//         .marquee-info{}
-//         .marquee-title{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:#fff;}
-//         .marquee-price{font-family:'DM Sans',sans-serif;font-size:0.75rem;color:#FF6B00;font-weight:600;}
-//         .marquee-rating{font-family:'DM Sans',sans-serif;font-size:0.72rem;color:#888;margin-left:4px;}
-
-//         /* Feature strip */
-//         .feature-strip{background:#fff;padding:24px 48px;display:flex;gap:40px;align-items:center;flex-wrap:wrap;border-bottom:1px solid #f0f0f0;}
-//         .feature-item{display:flex;align-items:center;gap:10px;font-family:'DM Sans',sans-serif;font-size:0.87rem;color:#555;}
-//         .feature-icon{width:34px;height:34px;background:#fff5ee;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
-
-//         /* Categories section */
-//         .cats-section{padding:56px 48px;max-width:1200px;margin:0 auto;}
-//         .section-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:#1a1a1a;margin-bottom:6px;}
-//         .section-sub{font-family:'DM Sans',sans-serif;font-size:0.9rem;color:#888;margin-bottom:32px;}
-//         .cats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;}
-//         .cat-card{background:#fff;border-radius:16px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 2px 12px rgba(0,0,0,0.05);border:2px solid transparent;}
-//         .cat-card:hover{border-color:#FF6B00;transform:translateY(-3px);box-shadow:0 6px 24px rgba(255,107,0,0.12);}
-//         .cat-icon{font-size:2.2rem;margin-bottom:10px;}
-//         .cat-name{font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:#1a1a1a;}
-//         .cat-count{font-family:'DM Sans',sans-serif;font-size:0.75rem;color:#aaa;margin-top:3px;}
-
-//         @media(max-width:900px){.h-floats{display:none;}.h-stats{gap:28px;}}
-//         @media(max-width:600px){
-//           .hero{padding:100px 24px 70px;}
-//           .feature-strip{padding:20px 24px;gap:20px;}
-//           .cats-section{padding:40px 24px;}
-//           .h-actions{gap:10px;}
-//           .h-btn1,.h-btn2{padding:13px 24px;font-size:0.9rem;}
-//         }
-//       `}</style>
-
-//       {/* Hero */}
-//       <section className="hero">
-//         <div className="h-tag"><span />Tap. Rent. Return. Repeat.</div>
-//         <h1 className="h-title">TAP. RENT.<br /><span className="dark">MOVE.</span> NOW!</h1>
-//         <p className="h-sub">Borrow anything from anyone around you. Cameras, bikes, tools, party gear — rent for a day, not forever.</p>
-
-//         <div className="h-actions">
-//           {(!user || user.role === "renter" || user.role === "lister") && (
-//             <button className="h-btn1" onClick={() => navigate("rent")}>Browse Items →</button>
-//           )}
-//           {user?.role === "lister" && (
-//             <button className="h-btn2" onClick={() => navigate("list")}>List Your Item</button>
-//           )}
-//           {!user && (
-//             <button className="h-btn2" onClick={() => navigate("rent")}>Explore Items</button>
-//           )}
-//         </div>
-
-//         <div className="h-stats">
-//           {[["500+","Items Available"],["98%","Happy Renters"],["6","Categories"],["₹200","Starting from/day"]].map(([n,l]) => (
-//             <div key={l}><div className="h-stat-num">{n}</div><div className="h-stat-lbl">{l}</div></div>
-//           ))}
-//         </div>
-
-//         {/* Float cards */}
-//         <div className="h-floats">
-//           <div className="h-card">
-//             <div className="h-card-lbl">🔥 Most Rented Today</div>
-//             <div className="h-card-val">Sony A7III Camera</div>
-//             <div className="h-card-sub">₹800/day · Pune</div>
-//             <span className="h-badge" style={{ background:"#e8f5e9", color:"#2e7d32" }}>⭐ 4.8 Rating</span>
-//           </div>
-//           <div className="h-card">
-//             <div className="h-card-lbl">✨ Newly Listed</div>
-//             <div className="h-card-val">GoPro Hero 12</div>
-//             <div className="h-card-sub">₹500/day · Goa</div>
-//             <span className="h-badge" style={{ background:"#fff3e0", color:"#e65100" }}>🆕 Just Added</span>
-//           </div>
-//         </div>
-
-//         <div className="h-scroll">
-//           <div className="h-scroll-dot" />
-//           <span>Scroll</span>
-//         </div>
-//       </section>
-
-//       {/* Marquee — Top Rated Items */}
-//       <div className="marquee-section">
-//         <div className="marquee-label">⭐ Top Rated Items</div>
-//         <div className="marquee-track">
-//           {marqueeItems.map((item, i) => (
-//             <div className="marquee-item" key={i} onClick={() => navigate("rent")}>
-//               <span className="marquee-icon">{CATEGORY_ICONS[item.category] || "📦"}</span>
-//               <div className="marquee-info">
-//                 <div className="marquee-title">{item.title}</div>
-//                 <div className="marquee-price">₹{item.price}/day <span className="marquee-rating">⭐ {item.rating}</span></div>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-
-//       {/* Feature strip */}
-//       <div className="feature-strip">
-//         {[["⚡","Instant Booking"],["🔐","Verified Owners"],["📍","Multiple Cities"],["💬","24/7 Support"],["🚫","Zero Brokerage"],["🧾","Digital Receipt"]].map(([ic,txt]) => (
-//           <div className="feature-item" key={txt}>
-//             <div className="feature-icon">{ic}</div>{txt}
-//           </div>
-//         ))}
-//       </div>
-
-//       {/* Categories */}
-//       <div className="cats-section">
-//         <div className="section-title">Browse by Category</div>
-//         <div className="section-sub">Find exactly what you need across 6 categories</div>
-//         <div className="cats-grid">
-//           {Object.entries(CATEGORY_ICONS).map(([name, icon]) => {
-//             const count = items.filter(it => it.category === name && it.isAvailable).length;
-//             return (
-//               <div className="cat-card" key={name} onClick={() => navigate("rent")}>
-//                 <div className="cat-icon">{icon}</div>
-//                 <div className="cat-name">{name}</div>
-//                 <div className="cat-count">{count} available</div>
-//               </div>
-//             );
-//           })}
-//         </div>
-//       </div>
-//     </>
-//   );
-//   //this component is getting too big, can split into smaller ones if needed in future
-// }
-
-//-----------------------------------------------------------------------------------
-//uddated hero page form tushar.
-
+import { useState } from "react";
 import { useApp, useAuth } from "../App";
 
-const CATEGORY_ICONS = {
-  Electronics: "📷",
-  Vehicles: "🏍️",
-  "Party & Events": "🎉",
-  "Sports & Outdoor": "⛺",
-  "Tools & Equipment": "🔧",
-  "Furniture & Appliances": "🛋️",
-};
-
 export default function Hero({ navigate }) {
-  const { items } = useApp();
+  const { items, wishlist, toggleWishlist } = useApp();
   const { user } = useAuth();
 
-  const topItems = [...items]
-    .sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating))
-    .slice(0, 10);
-  const marqueeItems = [...topItems, ...topItems]; // duplicate for infinite scroll
+  // Selected item modal for consultation or quick view
+  const [activeHotspot, setActiveHotspot] = useState(null);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [consultModalOpen, setConsultModalOpen] = useState(false);
+  const [consultSubmitted, setConsultSubmitted] = useState(false);
+
+  // Trending items data matching mockup
+  const trendingProducts = [
+    {
+      id: 1,
+      title: "Black Relax ST Chair & Table",
+      category: "Chair",
+      price: "$150.00",
+      rating: "5.0",
+      reviews: 24,
+      image: "/images/chair_black_relax.jpg",
+      badge: "Popular",
+    },
+    {
+      id: 2,
+      title: "Cozy Duo with Table",
+      category: "Living Room",
+      price: "$170.00",
+      rating: "4.9",
+      reviews: 38,
+      image: "/images/chair_cozy_duo.jpg",
+      badge: "Hot",
+    },
+    {
+      id: 3,
+      title: "Elegant Brown Table",
+      category: "Table",
+      price: "$75.00",
+      rating: "4.8",
+      reviews: 19,
+      image: "/images/table_elegant_brown.jpg",
+      badge: null,
+    },
+    {
+      id: 4,
+      title: "White Cushion Back Chair",
+      category: "Chair",
+      price: "$95.00",
+      rating: "4.9",
+      reviews: 42,
+      image: "/images/chair_white_cushion.jpg",
+      badge: "Sale",
+    },
+  ];
+
+  // Latest arrivals data matching 8-grid mockup
+  const latestArrivals = [
+    {
+      id: 5,
+      title: "Cushion Comfort Chair",
+      category: "Chair",
+      price: "$90.00",
+      rating: "5.0",
+      reviews: 16,
+      image: "/images/chair_blue_velvet.jpg",
+      badge: "New",
+    },
+    {
+      id: 6,
+      title: "Softwood Chair",
+      category: "Chair",
+      price: "$85.00",
+      rating: "4.8",
+      reviews: 21,
+      image: "/images/chair_softwood.jpg",
+      badge: null,
+    },
+    {
+      id: 2,
+      title: "Cozy Duo with Table",
+      category: "Living Room",
+      price: "$170.00",
+      rating: "4.9",
+      reviews: 38,
+      image: "/images/chair_cozy_duo.jpg",
+      badge: null,
+    },
+    {
+      id: 4,
+      title: "Comfy Wood Chair",
+      category: "Chair",
+      price: "$65.00",
+      rating: "4.7",
+      reviews: 14,
+      image: "/images/chair_white_cushion.jpg",
+      badge: "Sale",
+    },
+    {
+      id: 4,
+      title: "White Cushion Back Chair",
+      category: "Chair",
+      price: "$95.00",
+      rating: "4.9",
+      reviews: 42,
+      image: "/images/chair_white_cushion.jpg",
+      badge: null,
+    },
+    {
+      id: 7,
+      title: "Home Lounge Set",
+      category: "Dining",
+      price: "$220.00",
+      rating: "5.0",
+      reviews: 29,
+      image: "/images/table_lounge_dining.jpg",
+      badge: "Popular",
+    },
+    {
+      id: 1,
+      title: "Black Relax ST Chair & Table",
+      category: "Bistro",
+      price: "$150.00",
+      rating: "5.0",
+      reviews: 24,
+      image: "/images/chair_black_relax.jpg",
+      badge: null,
+    },
+    {
+      id: 3,
+      title: "Elegant Brown Table",
+      category: "Table",
+      price: "$75.00",
+      rating: "4.8",
+      reviews: 19,
+      image: "/images/table_elegant_brown.jpg",
+      badge: "Sale",
+    },
+  ];
+
+  // Video testimonials matching mockup
+  const testimonials = [
+    {
+      id: 1,
+      name: "Carlos Hughes",
+      role: "Architect, Pune",
+      quote: "Furnished my entire 2BHK within 48 hours without spending a fortune upfront. High quality craftsmanship and painless returns.",
+      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80",
+    },
+    {
+      id: 2,
+      name: "Chloe Navin",
+      role: "Interior Stylist, Mumbai",
+      quote: "The flexible rental model is a lifesaver for staging homes and temporary living. The pieces look even better in person.",
+      photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80",
+    },
+    {
+      id: 3,
+      name: "Brittany Smith",
+      role: "Product Designer, Bangalore",
+      quote: "I love switching up my apartment layout every 6 months. QuickRent makes sustainable modern living completely hassle-free.",
+      photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&auto=format&fit=crop&q=80",
+    },
+    {
+      id: 4,
+      name: "James Wilson",
+      role: "Software Engineer, Hyderabad",
+      quote: "Top notch customer care and genuine solid wood furniture. Zero maintenance worries, easily the best rental platform.",
+      photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop&q=80",
+    },
+  ];
+
+  // Blog articles matching mockup
+  const blogPosts = [
+    {
+      id: 1,
+      title: "Eco-Friendly Furniture: Not Expensive",
+      date: "September 18, 2026",
+      desc: "How circular economy rental furniture is drastically reducing carbon footprints while making high-end wooden interiors accessible.",
+      image: "/images/blog_eco_furniture.jpg",
+    },
+    {
+      id: 2,
+      title: "Why Custom Furniture is Worth the Investment",
+      date: "September 14, 2026",
+      desc: "Balancing comfort, ergonomic support, and timeless aesthetic in contemporary living rooms with bespoke wooden pieces.",
+      image: "/images/blog_custom_furniture.jpg",
+    },
+    {
+      id: 3,
+      title: "Sustainable Furniture: Eco-Friendly Choices for Your Home",
+      date: "September 09, 2026",
+      desc: "Discover sustainable fabrics, natural oils, and responsibly sourced teak that keep your home healthy, vibrant, and timeless.",
+      image: "/images/blog_sustainable_green.jpg",
+    },
+  ];
+
+  const handleCardClick = (product) => {
+    // If a matching item exists in global items, pass it to navigate
+    const matched = items.find((it) => it.id === product.id) || items[0];
+    navigate("rent", matched);
+  };
 
   return (
-    <>
+    <div className="home-container">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
-        @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes scrollB{0%,100%{transform:translateY(0);opacity:1}80%{transform:translateY(8px);opacity:0.3}}
-        @keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+        .home-container {
+          width: 100%;
+          background: #ffffff;
+          color: #2D3136;
+          overflow-x: hidden;
+        }
 
-        .hero{min-height:100vh;background:#FF6B00;display:flex;flex-direction:column;justify-content:center;padding:120px 48px 80px;position:relative;overflow:hidden;}
-        .hero::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;border-radius:50%;background:rgba(255,255,255,0.06);pointer-events:none;}
-        .hero::after{content:'';position:absolute;bottom:-150px;right:200px;width:350px;height:350px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none;}
+        /* ── HERO SECTION ── */
+        .hero-banner {
+          position: relative;
+          min-height: 88vh;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 120px 24px 80px;
+          background-image: linear-gradient(180deg, rgba(18, 20, 24, 0.45) 0%, rgba(18, 20, 24, 0.82) 100%), url('/images/hero_furniture_dark.jpg');
+          background-size: cover;
+          background-position: center center;
+          background-repeat: no-repeat;
+          border-radius: 0 0 36px 36px;
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
 
-        .h-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);color:#fff;padding:6px 16px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:0.83rem;font-weight:500;margin-bottom:26px;width:fit-content;animation:fadeUp .6s both;}
-        .h-tag span{width:7px;height:7px;border-radius:50%;background:#fff;display:block;}
-        .h-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(3rem,8vw,6.5rem);color:#fff;line-height:1;letter-spacing:-2px;animation:fadeUp .6s .1s both;}
-        .h-title .dark{color:#1a1a1a;}
-        .h-sub{font-family:'DM Sans',sans-serif;font-size:1.1rem;color:rgba(255,255,255,0.82);margin-top:22px;font-weight:300;max-width:460px;line-height:1.65;animation:fadeUp .6s .2s both;}
-        .h-actions{display:flex;gap:14px;margin-top:44px;flex-wrap:wrap;animation:fadeUp .6s .3s both;}
-        .h-btn1{padding:15px 34px;background:#1a1a1a;color:#fff;border:none;border-radius:50px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.97rem;cursor:pointer;transition:all .2s;}
-        .h-btn1:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.28);}
-        .h-btn2{padding:15px 34px;background:rgba(255,255,255,0.15);color:#fff;border:2px solid rgba(255,255,255,0.38);border-radius:50px;font-family:'Syne',sans-serif;font-weight:600;font-size:0.97rem;cursor:pointer;transition:all .2s;}
-        .h-btn2:hover{background:rgba(255,255,255,0.25);transform:translateY(-2px);}
-        .h-stats{display:flex;gap:48px;margin-top:64px;flex-wrap:wrap;animation:fadeUp .6s .4s both;}
-        .h-stat-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:#fff;line-height:1;}
-        .h-stat-lbl{font-family:'DM Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.65);margin-top:3px;}
+        .hero-kicker {
+          font-size: 0.9rem;
+          font-weight: 600;
+          letter-spacing: 2.5px;
+          text-transform: uppercase;
+          color: rgba(255, 255, 255, 0.88);
+          margin-bottom: 18px;
+        }
 
-        /* Float cards */
-        .h-floats{position:absolute;right:5%;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;animation:fadeUp .7s .5s both;}
-        .h-card{background:#fff;border-radius:18px;padding:18px 22px;box-shadow:0 8px 32px rgba(0,0,0,0.10);min-width:230px;transition:transform .2s;}
-        .h-card:hover{transform:translateY(-3px);}
-        .h-card-lbl{font-family:'DM Sans',sans-serif;font-size:0.72rem;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
-        .h-card-val{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:#1a1a1a;}
-        .h-card-sub{font-family:'DM Sans',sans-serif;font-size:0.78rem;color:#888;margin-top:2px;}
-        .h-badge{display:inline-block;border-radius:50px;padding:2px 10px;font-size:0.72rem;font-weight:600;margin-top:7px;}
+        .hero-heading {
+          font-size: 3.4rem;
+          font-weight: 700;
+          color: #ffffff;
+          line-height: 1.18;
+          max-width: 820px;
+          margin: 0 auto 32px;
+          letter-spacing: -0.5px;
+        }
 
-        /* Scroll hint */
-        .h-scroll{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;animation:fadeUp .6s .8s both;}
-        .h-scroll span{font-family:'DM Sans',sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:2px;}
-        .h-scroll-dot{width:22px;height:38px;border:2px solid rgba(255,255,255,0.38);border-radius:11px;display:flex;justify-content:center;padding-top:5px;}
-        .h-scroll-dot::after{content:'';width:4px;height:7px;background:#fff;border-radius:2px;animation:scrollB 1.5s infinite;}
+        .hero-btn {
+          display: inline-block;
+          background-color: #E24B36;
+          color: #ffffff;
+          padding: 15px 44px;
+          border-radius: 30px;
+          font-size: 0.98rem;
+          font-weight: 700;
+          letter-spacing: 0.8px;
+          text-transform: uppercase;
+          border: none;
+          cursor: pointer;
+          transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+          box-shadow: 0 6px 20px rgba(226, 75, 54, 0.45);
+        }
 
-        /* Marquee */
-        .marquee-section{background:#1a1a1a;padding:20px 0;overflow:hidden;}
-        .marquee-label{font-family:'DM Sans',sans-serif;font-size:0.7rem;color:#666;text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:12px;}
-        .marquee-track{display:flex;animation:marqueeScroll 30s linear infinite;}
-        .marquee-track:hover{animation-play-state:paused;}
-        .marquee-item{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border-radius:50px;padding:10px 20px;margin:0 8px;white-space:nowrap;cursor:pointer;transition:background .2s;flex-shrink:0;}
-        .marquee-item:hover{background:rgba(255,107,0,0.2);}
-        .marquee-icon{font-size:1.2rem;}
-        .marquee-info{}
-        .marquee-title{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:#fff;}
-        .marquee-price{font-family:'DM Sans',sans-serif;font-size:0.75rem;color:#FF6B00;font-weight:600;}
-        .marquee-rating{font-family:'DM Sans',sans-serif;font-size:0.72rem;color:#888;margin-left:4px;}
+        .hero-btn:hover {
+          background-color: #C93C29;
+          transform: translateY(-2px);
+          box-shadow: 0 10px 26px rgba(226, 75, 54, 0.55);
+        }
 
-        /* Feature Cards */
-        .features-section { padding: 80px 48px; background: #fdfdfd; }
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
-        .f-card { border-radius: 16px; padding: 44px 32px; display: flex; flex-direction: column; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 15px rgba(0,0,0,0.04); position: relative; overflow: hidden; cursor: auto; border: 1px solid rgba(0,0,0,0.05); }
-        .f-card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
-        .f-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top right, rgba(255,255,255,0.25), transparent 60%); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
-        .f-card:hover::after { opacity: 1; }
-        .f-icon { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.4rem; margin-bottom: 28px; transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 8px 16px rgba(0,0,0,0.08); }
-        .f-card:hover .f-icon { transform: scale(1.15) rotate(8deg); }
-        .f-title { font-family: 'Syne', sans-serif; font-size: 1.35rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
-        .f-desc { font-family: 'DM Sans', sans-serif; font-size: 0.95rem; line-height: 1.6; margin-bottom: 32px; flex-grow: 1; font-weight: 400; }
-        .f-link { font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; transition: gap 0.3s; cursor: pointer; }
-        .f-card:hover .f-link { gap: 12px; }
+        /* ── VALUE PROPOSITIONS BAR ── */
+        .value-strip {
+          max-width: 1200px;
+          margin: 40px auto 30px;
+          padding: 0 32px;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 32px;
+        }
 
-        .f-card.card-white { background: #fff; color: #1a1a1a; }
-        .f-card.card-white .f-icon { background: #f0f4f8; }
-        .f-card.card-white .f-desc { color: #555; }
-        .f-card.card-white .f-link { color: #00a98f; }
+        .value-item {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          padding: 16px 20px;
+          border-radius: 12px;
+          background: #FAF9F8;
+          border: 1px solid #EFEFED;
+        }
 
-        .f-card.card-dark { background: #1c2434; color: #fff; border:none; }
-        .f-card.card-dark .f-icon { background: rgba(255,255,255,0.1); border-radius: 16px; box-shadow:none; }
-        .f-card.card-dark .f-desc { color: rgba(255,255,255,0.7); }
-        .f-card.card-dark .f-link { color: #ccc; }
+        .value-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 10px;
+          background: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.5rem;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+          flex-shrink: 0;
+        }
 
-        .f-card.card-teal { background: #00a98f; color: #fff; border:none; }
-        .f-card.card-teal .f-icon { background: #fff; color: #00a98f; border-radius: 16px; box-shadow:none; }
-        .f-card.card-teal .f-desc { color: rgba(255,255,255,0.85); }
-        .f-card.card-teal .f-link { color: #fff; }
+        .value-text h4 {
+          font-size: 1rem;
+          font-weight: 700;
+          color: #1A1D20;
+          margin-bottom: 3px;
+        }
 
-        .f-card.card-blue { background: #1da1f2; color: #fff; border:none; }
-        .f-card.card-blue .f-icon { background: rgba(255,255,255,0.2); border-radius: 50%; box-shadow:none; }
-        .f-card.card-blue .f-desc { color: rgba(255,255,255,0.9); }
-        .f-card.card-blue .f-link { color: #fff; }
+        .value-text p {
+          font-size: 0.85rem;
+          color: #6C757D;
+        }
 
-        .f-card.align-center { align-items: center; text-align: center; }
-        .f-card.align-left { align-items: flex-start; text-align: left; }
+        /* ── COMMON SECTION STYLES ── */
+        .section-wrap {
+          max-width: 1240px;
+          margin: 70px auto 0;
+          padding: 0 32px;
+        }
 
-        /* Categories section */
-        .cats-section{padding:56px 48px;max-width:1200px;margin:0 auto;}
-        .section-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:#1a1a1a;margin-bottom:6px;}
-        .section-sub{font-family:'DM Sans',sans-serif;font-size:0.9rem;color:#888;margin-bottom:32px;}
-        .cats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;}
-        .cat-card{background:#fff;border-radius:16px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 2px 12px rgba(0,0,0,0.05);border:2px solid transparent;}
-        .cat-card:hover{border-color:#FF6B00;transform:translateY(-3px);box-shadow:0 6px 24px rgba(255,107,0,0.12);}
-        .cat-icon{font-size:2.2rem;margin-bottom:10px;}
-        .cat-name{font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:#1a1a1a;}
-        .cat-count{font-family:'DM Sans',sans-serif;font-size:0.75rem;color:#aaa;margin-top:3px;}
+        .section-header {
+          text-align: center;
+          margin-bottom: 40px;
+        }
 
-        @media(max-width:900px){.h-floats{display:none;}.h-stats{gap:28px;}}
-        @media(max-width:600px){
-          .hero{padding:100px 24px 70px;}
-          .features-section{padding:40px 24px;}
-          .features-grid{grid-template-columns: 1fr; gap:20px;}
-          .cats-section{padding:40px 24px;}
-          .h-actions{gap:10px;}
-          .h-btn1,.h-btn2{padding:13px 24px;font-size:0.9rem;}
+        .section-title {
+          font-size: 2.1rem;
+          font-weight: 700;
+          color: #1A1D20;
+          letter-spacing: -0.3px;
+          margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+          font-size: 0.95rem;
+          color: #6C757D;
+          max-width: 600px;
+          margin: 0 auto;
+        }
+
+        /* ── PRODUCT CARD GRID ── */
+        .products-grid-4 {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 24px;
+        }
+
+        .product-card {
+          background: #ffffff;
+          border-radius: 14px;
+          border: 1px solid #ECECEB;
+          overflow: hidden;
+          transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+          display: flex;
+          flex-direction: column;
+          cursor: pointer;
+          position: relative;
+        }
+
+        .product-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+          border-color: #DDD;
+        }
+
+        .card-image-wrap {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 1 / 1;
+          background: #F7F7F6;
+          overflow: hidden;
+        }
+
+        .card-image-wrap img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .card-image-wrap img {
+          transform: scale(1.03);
+        }
+
+        .card-badge {
+          position: absolute;
+          top: 12px;
+          left: 12px;
+          background: #1A1D20;
+          color: #ffffff;
+          font-size: 0.72rem;
+          font-weight: 700;
+          padding: 4px 10px;
+          border-radius: 20px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .card-badge.sale {
+          background: #E24B36;
+        }
+
+        .card-wish-btn {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.92);
+          border: 1px solid #E0E0DE;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 0.95rem;
+          transition: transform 0.15s ease, background-color 0.15s ease;
+        }
+
+        .card-wish-btn:hover {
+          transform: scale(1.12);
+          background: #ffffff;
+        }
+
+        .card-info {
+          padding: 16px 18px 20px;
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+        }
+
+        .card-category {
+          font-size: 0.78rem;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+          color: #8C9196;
+          font-weight: 600;
+          margin-bottom: 5px;
+        }
+
+        .card-title {
+          font-size: 1rem;
+          font-weight: 700;
+          color: #1A1D20;
+          margin-bottom: 8px;
+          line-height: 1.35;
+        }
+
+        .card-rating-row {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin-bottom: 12px;
+        }
+
+        .star-icons {
+          color: #F59E0B;
+          font-size: 0.88rem;
+          letter-spacing: 1px;
+        }
+
+        .rating-num {
+          font-size: 0.82rem;
+          color: #6C757D;
+          font-weight: 500;
+        }
+
+        .card-bottom-row {
+          margin-top: auto;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding-top: 10px;
+          border-top: 1px solid #F2F2F0;
+        }
+
+        .card-price {
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: #E24B36;
+        }
+
+        .card-rent-btn {
+          background: #FAF9F8;
+          color: #1A1D20;
+          border: 1px solid #E0E0DC;
+          padding: 6px 14px;
+          border-radius: 6px;
+          font-size: 0.82rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+
+        .product-card:hover .card-rent-btn {
+          background: #E24B36;
+          color: #ffffff;
+          border-color: #E24B36;
+        }
+
+        /* ── HELP / CONSULTATION SPLIT BANNER ── */
+        .help-banner {
+          max-width: 1240px;
+          margin: 70px auto 0;
+          padding: 0 32px;
+        }
+
+        .help-card {
+          background: #FAF9F8;
+          border: 1px solid #EFEFED;
+          border-radius: 18px;
+          padding: 44px 48px;
+          display: grid;
+          grid-template-columns: 1fr 1.4fr;
+          gap: 48px;
+          align-items: center;
+        }
+
+        .help-left h3 {
+          font-size: 1.85rem;
+          font-weight: 700;
+          color: #1A1D20;
+          line-height: 1.3;
+          margin-bottom: 18px;
+        }
+
+        .help-link-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: none;
+          border: none;
+          color: #E24B36;
+          font-size: 0.95rem;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+          cursor: pointer;
+          padding: 0;
+          transition: gap 0.2s ease;
+        }
+
+        .help-link-btn:hover {
+          gap: 12px;
+          text-decoration: underline;
+        }
+
+        .help-right p {
+          font-size: 0.95rem;
+          line-height: 1.7;
+          color: #555A60;
+        }
+
+        /* ── LIFESTYLE BANNER WITH HOTSPOT PINS ── */
+        .lifestyle-section {
+          max-width: 1240px;
+          margin: 80px auto 0;
+          padding: 0 32px;
+        }
+
+        .lifestyle-container {
+          position: relative;
+          width: 100%;
+          min-height: 480px;
+          border-radius: 24px;
+          overflow: hidden;
+          background-image: url('/images/lifestyle_living_room.jpg');
+          background-size: cover;
+          background-position: center;
+          box-shadow: 0 10px 32px rgba(0, 0, 0, 0.08);
+          border: 1px solid #ECECEB;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          padding: 40px;
+        }
+
+        /* Hotspot pins */
+        .hotspot-pin {
+          position: absolute;
+          width: 22px;
+          height: 22px;
+          background: #E24B36;
+          border: 3px solid #ffffff;
+          border-radius: 50%;
+          cursor: pointer;
+          box-shadow: 0 2px 10px rgba(226, 75, 54, 0.5);
+          transition: transform 0.2s ease;
+          z-index: 5;
+        }
+
+        .hotspot-pin:hover {
+          transform: scale(1.35);
+        }
+
+        .hotspot-tooltip {
+          position: absolute;
+          bottom: 30px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #1A1D20;
+          color: #ffffff;
+          padding: 8px 14px;
+          border-radius: 8px;
+          font-size: 0.8rem;
+          font-weight: 600;
+          white-space: nowrap;
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+          pointer-events: none;
+          z-index: 10;
+        }
+
+        /* Lifestyle promo card on the right */
+        .lifestyle-card {
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(8px);
+          border: 1px solid #EAEAEA;
+          border-radius: 16px;
+          padding: 36px 38px;
+          max-width: 380px;
+          box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+        }
+
+        .lifestyle-card h3 {
+          font-size: 1.55rem;
+          font-weight: 700;
+          color: #1A1D20;
+          line-height: 1.3;
+          margin-bottom: 12px;
+        }
+
+        .lifestyle-discount {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: #E24B36;
+          margin-bottom: 20px;
+        }
+
+        .lifestyle-store-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: #1A1D20;
+          color: #ffffff;
+          padding: 12px 28px;
+          border-radius: 6px;
+          font-size: 0.88rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+          border: none;
+          cursor: pointer;
+          transition: background 0.15s ease, transform 0.15s ease;
+        }
+
+        .lifestyle-store-btn:hover {
+          background: #E24B36;
+          transform: translateY(-2px);
+        }
+
+        /* ── VIDEO TESTIMONIALS SECTION ── */
+        .testimonials-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 24px;
+        }
+
+        .testimonial-card {
+          background: #FAF9F8;
+          border: 1px solid #ECECEB;
+          border-radius: 14px;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .testimonial-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .testimonial-media {
+          position: relative;
+          width: 100%;
+          height: 180px;
+          background: #1A1D20;
+          overflow: hidden;
+        }
+
+        .testimonial-media img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          opacity: 0.9;
+          filter: grayscale(20%);
+        }
+
+        .video-play-btn {
+          position: absolute;
+          bottom: 14px;
+          left: 14px;
+          background: #E24B36;
+          color: #ffffff;
+          padding: 6px 14px;
+          border-radius: 20px;
+          font-size: 0.78rem;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          border: none;
+          cursor: pointer;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+          transition: background 0.15s ease;
+        }
+
+        .video-play-btn:hover {
+          background: #C93C29;
+        }
+
+        .testimonial-body {
+          padding: 18px 20px 22px;
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+        }
+
+        .reviewer-name {
+          font-size: 0.98rem;
+          font-weight: 700;
+          color: #1A1D20;
+          margin-bottom: 2px;
+        }
+
+        .reviewer-role {
+          font-size: 0.78rem;
+          color: #8C9196;
+          margin-bottom: 12px;
+        }
+
+        .reviewer-quote {
+          font-size: 0.88rem;
+          color: #555A60;
+          line-height: 1.6;
+          font-style: italic;
+        }
+
+        /* ── BLOG INSIGHTS SECTION ── */
+        .blog-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 28px;
+        }
+
+        .blog-card {
+          background: #ffffff;
+          border-radius: 14px;
+          border: 1px solid #ECECEB;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .blog-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 10px 24px rgba(0, 0, 0, 0.07);
+        }
+
+        .blog-img-wrap {
+          width: 100%;
+          height: 220px;
+          background: #F0F0EE;
+          overflow: hidden;
+        }
+
+        .blog-img-wrap img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.3s ease;
+        }
+
+        .blog-card:hover .blog-img-wrap img {
+          transform: scale(1.04);
+        }
+
+        .blog-info {
+          padding: 22px;
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+        }
+
+        .blog-date {
+          font-size: 0.78rem;
+          color: #8C9196;
+          font-weight: 500;
+          margin-bottom: 8px;
+        }
+
+        .blog-title {
+          font-size: 1.15rem;
+          font-weight: 700;
+          color: #1A1D20;
+          line-height: 1.35;
+          margin-bottom: 10px;
+        }
+
+        .blog-desc {
+          font-size: 0.88rem;
+          color: #555A60;
+          line-height: 1.6;
+          margin-bottom: 18px;
+          flex-grow: 1;
+        }
+
+        .blog-link {
+          font-size: 0.88rem;
+          font-weight: 700;
+          color: #E24B36;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          cursor: pointer;
+        }
+
+        .blog-link:hover {
+          text-decoration: underline;
+        }
+
+        /* ── MODALS (VIDEO / CONSULTATION) ── */
+        .modal-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.7);
+          z-index: 2000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+        }
+
+        .modal-content {
+          background: #ffffff;
+          border-radius: 16px;
+          max-width: 500px;
+          width: 100%;
+          padding: 32px;
+          position: relative;
+          box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-close-btn {
+          position: absolute;
+          top: 16px;
+          right: 16px;
+          background: #F2F2F0;
+          border: none;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          cursor: pointer;
+          font-weight: bold;
+          font-size: 1rem;
+        }
+
+        /* ── RESPONSIVE MEDIA QUERIES (NO CLAMP) ── */
+        @media (max-width: 1080px) {
+          .products-grid-4 {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          .testimonials-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          .value-strip {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+        }
+
+        @media (max-width: 860px) {
+          .hero-heading {
+            font-size: 2.5rem;
+          }
+          .help-card {
+            grid-template-columns: 1fr;
+            gap: 24px;
+            padding: 32px 24px;
+          }
+          .lifestyle-container {
+            justify-content: center;
+            min-height: 420px;
+            padding: 20px;
+          }
+          .lifestyle-card {
+            max-width: 100%;
+          }
+          .blog-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        @media (max-width: 560px) {
+          .hero-banner {
+            padding: 100px 16px 60px;
+            border-radius: 0 0 24px 24px;
+          }
+          .hero-heading {
+            font-size: 1.95rem;
+          }
+          .section-title {
+            font-size: 1.65rem;
+          }
+          .products-grid-4 {
+            grid-template-columns: 1fr;
+          }
+          .testimonials-grid {
+            grid-template-columns: 1fr;
+          }
+          .section-wrap {
+            padding: 0 16px;
+          }
         }
       `}</style>
 
-      {/* Hero */}
-      <section className="hero">
-        <div className="h-tag">
-          <span />
-          Tap. Rent. Return. Repeat.
-        </div>
-        <h1 className="h-title">
-          TAP. RENT.
-          <br />
-          <span className="dark">MOVE.</span> NOW!
-        </h1>
-        <p className="h-sub">
-          Borrow anything from anyone around you. Cameras, bikes, tools, party
-          gear — rent for a day, not forever.
-        </p>
-
-        <div className="h-actions">
-          {(!user || user.role === "renter" || user.role === "lister") && (
-            <button className="h-btn1" onClick={() => navigate("rent")}>
-              Browse Items →
-            </button>
-          )}
-          {user?.role === "lister" && (
-            <button className="h-btn2" onClick={() => navigate("list")}>
-              List Your Item
-            </button>
-          )}
-          {!user && (
-            <button className="h-btn2" onClick={() => navigate("rent")}>
-              Explore Items
-            </button>
-          )}
-        </div>
-
-        <div className="h-stats">
-          {[
-            ["500+", "Items Available"],
-            ["98%", "Happy Renters"],
-            ["6", "Categories"],
-            ["₹200", "Starting from/day"],
-          ].map(([n, l]) => (
-            <div key={l}>
-              <div className="h-stat-num">{n}</div>
-              <div className="h-stat-lbl">{l}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Float cards */}
-        <div className="h-floats">
-          <div className="h-card">
-            <div className="h-card-lbl">🔥 Most Rented Today</div>
-            <div className="h-card-val">Sony A7III Camera</div>
-            <div className="h-card-sub">₹800/day · Pune</div>
-            <span
-              className="h-badge"
-              style={{ background: "#e8f5e9", color: "#2e7d32" }}
-            >
-              ⭐ 4.8 Rating
-            </span>
-          </div>
-          <div className="h-card">
-            <div className="h-card-lbl">✨ Newly Listed</div>
-            <div className="h-card-val">GoPro Hero 12</div>
-            <div className="h-card-sub">₹500/day · Goa</div>
-            <span
-              className="h-badge"
-              style={{ background: "#fff3e0", color: "#e65100" }}
-            >
-              🆕 Just Added
-            </span>
-          </div>
-        </div>
-
-        <div className="h-scroll">
-          <div className="h-scroll-dot" />
-          <span>Scroll</span>
-        </div>
+      {/* ── 1. HERO SECTION ── */}
+      <section className="hero-banner">
+        <div className="hero-kicker">Minimal Meets Functional</div>
+        <h1 className="hero-heading">Affordable Elegance, Lasting Comfort</h1>
+        <button className="hero-btn" onClick={() => navigate("rent")}>
+          Shop Now
+        </button>
       </section>
 
-      {/* Marquee — Top Rated Items */}
-      <div className="marquee-section">
-        <div className="marquee-label">⭐ Top Rated Items</div>
-        <div className="marquee-track">
-          {marqueeItems.map((item, i) => (
-            <div
-              className="marquee-item"
-              key={i}
-              onClick={() => navigate("rent")}
-            >
-              <span className="marquee-icon">
-                {CATEGORY_ICONS[item.category] || "📦"}
-              </span>
-              <div className="marquee-info">
-                <div className="marquee-title">{item.title}</div>
-                <div className="marquee-price">
-                  ₹{item.price}/day{" "}
-                  <span className="marquee-rating">⭐ {item.rating}</span>
-                </div>
-              </div>
-            </div>
-          ))}
+      {/* ── 2. VALUE PROPOSITIONS BAR ── */}
+      <div className="value-strip">
+        <div className="value-item">
+          <div className="value-icon">🪑</div>
+          <div className="value-text">
+            <h4>Furniture Collection</h4>
+            <p>Any furniture for your space</p>
+          </div>
+        </div>
+        <div className="value-item">
+          <div className="value-icon">🚚</div>
+          <div className="value-text">
+            <h4>Free Shipping</h4>
+            <p>Free shipping on orders</p>
+          </div>
+        </div>
+        <div className="value-item">
+          <div className="value-icon">🔄</div>
+          <div className="value-text">
+            <h4>100% Money Back</h4>
+            <p>If the item doesn't suit you</p>
+          </div>
         </div>
       </div>
 
-      {/* Feature Cards */}
-      <div className="features-section">
-        <div className="features-grid">
-          {[
-            {
-              id: 1,
-              icon: "⚡",
-              title: "Instant Booking",
-              desc: "Fast and seamless booking process. Get your items exactly when you need them without delays.",
-              style: "card-white",
-              align: "center",
-              linkText: "Read More >",
-            },
-            {
-              id: 2,
-              icon: "🔐",
-              title: "Verified Owners",
-              desc: "Trust and safety first. All our item owners are thoroughly verified for a secure rental experience.",
-              style: "card-dark",
-              align: "left",
-              linkText: "Read More >",
-            },
-            {
-              id: 3,
-              icon: "📍",
-              title: "Multiple Cities",
-              desc: "We are expanding across major cities. Find rentals near you, wherever your journey takes you.",
-              style: "card-teal",
-              align: "left",
-              linkText: "Read More >",
-            },
-            {
-              id: 4,
-              icon: "💬",
-              title: "24/7 Support",
-              desc: "Our dedicated support team is always available to help you with any issues or queries.",
-              style: "card-blue",
-              align: "left",
-              linkText: "Contact Us →",
-            },
-            {
-              id: 5,
-              icon: "🚫",
-              title: "Zero Brokerage",
-              desc: "Enjoy completely transparent pricing with absolutely no hidden fees or middleman charges.",
-              style: "card-teal",
-              align: "center",
-              linkText: "Learn More →",
-            },
-            {
-              id: 6,
-              icon: "🧾",
-              title: "Digital Receipt",
-              desc: "Keep track of your expenses easily with instant digital receipts directly in your application.",
-              style: "card-white",
-              align: "center",
-              linkText: "View Docs →",
-            },
-          ].map((f) => (
-            <div
-              className={`f-card ${f.style} ${f.align === "center" ? "align-center" : "align-left"}`}
-              key={f.id}
-            >
-              <div className="f-icon">{f.icon}</div>
-              <div className="f-title">{f.title}</div>
-              <div className="f-desc">{f.desc}</div>
-              <div className="f-link">{f.linkText}</div>
-            </div>
-          ))}
+      {/* ── 3. TRENDING THIS WEEK ── */}
+      <section className="section-wrap">
+        <div className="section-header">
+          <h2 className="section-title">Trending This Week</h2>
+          <p className="section-subtitle">
+            Carefully selected designs crafted for comfort, style, and everyday flexible living.
+          </p>
         </div>
-      </div>
 
-      {/* Categories */}
-      <div className="cats-section">
-        <div className="section-title">Browse by Category</div>
-        <div className="section-sub">
-          Find exactly what you need across 6 categories
-        </div>
-        <div className="cats-grid">
-          {Object.entries(CATEGORY_ICONS).map(([name, icon]) => {
-            const count = items.filter(
-              (it) => it.category === name && it.isAvailable,
-            ).length;
+        <div className="products-grid-4">
+          {trendingProducts.map((p) => {
+            const isWish = wishlist ? wishlist.includes(p.id) : false;
             return (
               <div
-                className="cat-card"
-                key={name}
-                onClick={() => navigate("rent")}
+                className="product-card"
+                key={p.title}
+                onClick={() => handleCardClick(p)}
               >
-                <div className="cat-icon">{icon}</div>
-                <div className="cat-name">{name}</div>
-                <div className="cat-count">{count} available</div>
+                <div className="card-image-wrap">
+                  <img src={p.image} alt={p.title} loading="lazy" />
+                  {p.badge && (
+                    <span className={`card-badge ${p.badge.toLowerCase()}`}>
+                      {p.badge}
+                    </span>
+                  )}
+                  <button
+                    className="card-wish-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleWishlist(p.id);
+                    }}
+                    title={isWish ? "Remove from wishlist" : "Add to wishlist"}
+                  >
+                    {isWish ? "❤️" : "🤍"}
+                  </button>
+                </div>
+
+                <div className="card-info">
+                  <span className="card-category">{p.category}</span>
+                  <h3 className="card-title">{p.title}</h3>
+                  <div className="card-rating-row">
+                    <span className="star-icons">★★★★★</span>
+                    <span className="rating-num">
+                      {p.rating} ({p.reviews})
+                    </span>
+                  </div>
+                  <div className="card-bottom-row">
+                    <span className="card-price">{p.price}</span>
+                    <button className="card-rent-btn">Rent Item</button>
+                  </div>
+                </div>
               </div>
             );
           })}
         </div>
-      </div>
-    </>
+      </section>
+
+      {/* ── 4. CONSULTATION / HELP BANNER ── */}
+      <section className="help-banner">
+        <div className="help-card">
+          <div className="help-left">
+            <h3>Need help in choosing the right Furniture?</h3>
+            <button
+              className="help-link-btn"
+              onClick={() => setConsultModalOpen(true)}
+            >
+              ASK FOR HELP <span>→</span>
+            </button>
+          </div>
+          <div className="help-right">
+            <p>
+              Our interior experts and rental advisors are ready to assist you in curating
+              the ideal setup for your apartment, studio, or corporate space. Flexible tenure,
+              free relocations, and transparent zero-brokerage pricing.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 5. LATEST ARRIVALS (8-GRID) ── */}
+      <section className="section-wrap">
+        <div className="section-header">
+          <h2 className="section-title">Latest Arrivals</h2>
+          <p className="section-subtitle">
+            Discover newly added premium items ready for express delivery and instant setup.
+          </p>
+        </div>
+
+        <div className="products-grid-4">
+          {latestArrivals.map((p, idx) => {
+            const isWish = wishlist ? wishlist.includes(p.id) : false;
+            return (
+              <div
+                className="product-card"
+                key={`${p.title}-${idx}`}
+                onClick={() => handleCardClick(p)}
+              >
+                <div className="card-image-wrap">
+                  <img src={p.image} alt={p.title} loading="lazy" />
+                  {p.badge && (
+                    <span className={`card-badge ${p.badge.toLowerCase()}`}>
+                      {p.badge}
+                    </span>
+                  )}
+                  <button
+                    className="card-wish-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleWishlist(p.id);
+                    }}
+                    title={isWish ? "Remove from wishlist" : "Add to wishlist"}
+                  >
+                    {isWish ? "❤️" : "🤍"}
+                  </button>
+                </div>
+
+                <div className="card-info">
+                  <span className="card-category">{p.category}</span>
+                  <h3 className="card-title">{p.title}</h3>
+                  <div className="card-rating-row">
+                    <span className="star-icons">★★★★★</span>
+                    <span className="rating-num">
+                      {p.rating} ({p.reviews})
+                    </span>
+                  </div>
+                  <div className="card-bottom-row">
+                    <span className="card-price">{p.price}</span>
+                    <button className="card-rent-btn">Rent Item</button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ── 6. LIFESTYLE SHOWCASE BANNER WITH HOTSPOT PINS ── */}
+      <section className="lifestyle-section">
+        <div className="lifestyle-container">
+          {/* Hotspot 1 on Sectional Couch */}
+          <div
+            className="hotspot-pin"
+            style={{ bottom: "28%", left: "32%" }}
+            onMouseEnter={() => setActiveHotspot("sofa")}
+            onMouseLeave={() => setActiveHotspot(null)}
+            onClick={() => navigate("rent")}
+            title="Cloud Modular Sectional Sofa"
+          >
+            {activeHotspot === "sofa" && (
+              <div className="hotspot-tooltip">
+                Cloud Modular Sofa · $180.00/mo
+              </div>
+            )}
+          </div>
+
+          {/* Hotspot 2 on Coffee Table */}
+          <div
+            className="hotspot-pin"
+            style={{ bottom: "22%", left: "54%" }}
+            onMouseEnter={() => setActiveHotspot("table")}
+            onMouseLeave={() => setActiveHotspot(null)}
+            onClick={() => navigate("rent")}
+            title="Minimalist Low White Coffee Table"
+          >
+            {activeHotspot === "table" && (
+              <div className="hotspot-tooltip">
+                Minimalist Coffee Table · $45.00/mo
+              </div>
+            )}
+          </div>
+
+          {/* Promo Card on Right */}
+          <div className="lifestyle-card">
+            <h3>Designed for your lifestyle, built for your comfort</h3>
+            <div className="lifestyle-discount">Get 20% Discount</div>
+            <button
+              className="lifestyle-store-btn"
+              onClick={() => navigate("rent")}
+            >
+              Visit The Store →
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 7. VIDEO TESTIMONIALS ── */}
+      <section className="section-wrap">
+        <div className="section-header">
+          <h2 className="section-title">Video Testimonials</h2>
+          <p className="section-subtitle">
+            Hear why thousands of verified renters love furnishing their homes with QuickRent.
+          </p>
+        </div>
+
+        <div className="testimonials-grid">
+          {testimonials.map((t) => (
+            <div className="testimonial-card" key={t.name}>
+              <div className="testimonial-media">
+                <img src={t.photo} alt={t.name} loading="lazy" />
+                <button
+                  className="video-play-btn"
+                  onClick={() => setSelectedVideo(t)}
+                >
+                  <span>▶</span> Play Video
+                </button>
+              </div>
+
+              <div className="testimonial-body">
+                <div className="reviewer-name">{t.name}</div>
+                <div className="reviewer-role">{t.role}</div>
+                <p className="reviewer-quote">"{t.quote}"</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── 8. BLOG / ARTICLES SECTION ── */}
+      <section className="section-wrap" id="blog-section" style={{ marginBottom: "80px" }}>
+        <div className="section-header">
+          <h2 className="section-title">Design Inspiration & Stories</h2>
+          <p className="section-subtitle">
+            Insights on eco-friendly furnishing, interior styling, and flexible modern living.
+          </p>
+        </div>
+
+        <div className="blog-grid">
+          {blogPosts.map((post) => (
+            <div className="blog-card" key={post.title}>
+              <div className="blog-img-wrap">
+                <img src={post.image} alt={post.title} loading="lazy" />
+              </div>
+              <div className="blog-info">
+                <span className="blog-date">{post.date}</span>
+                <h3 className="blog-title">{post.title}</h3>
+                <p className="blog-desc">{post.desc}</p>
+                <span
+                  className="blog-link"
+                  onClick={() => alert(`Reading article: "${post.title}". Full article coming soon!`)}
+                >
+                  Read more →
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── VIDEO MODAL ── */}
+      {selectedVideo && (
+        <div className="modal-overlay" onClick={() => setSelectedVideo(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="modal-close-btn"
+              onClick={() => setSelectedVideo(null)}
+            >
+              ✕
+            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "16px" }}>
+              <img
+                src={selectedVideo.photo}
+                alt={selectedVideo.name}
+                style={{ width: "52px", height: "52px", borderRadius: "50%", objectFit: "cover" }}
+              />
+              <div>
+                <h4 style={{ fontSize: "1.1rem", fontWeight: 700 }}>{selectedVideo.name}</h4>
+                <p style={{ fontSize: "0.82rem", color: "#6C757D" }}>{selectedVideo.role}</p>
+              </div>
+            </div>
+            <div style={{ background: "#F8F8F7", padding: "18px", borderRadius: "10px", marginBottom: "18px" }}>
+              <p style={{ fontStyle: "italic", lineHeight: 1.6, color: "#333" }}>
+                "{selectedVideo.quote}"
+              </p>
+            </div>
+            <div style={{ fontSize: "0.85rem", color: "#6C757D", textAlign: "center" }}>
+              ✅ Verified QuickRent Customer
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── CONSULTATION MODAL ── */}
+      {consultModalOpen && (
+        <div className="modal-overlay" onClick={() => setConsultModalOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="modal-close-btn"
+              onClick={() => {
+                setConsultModalOpen(false);
+                setConsultSubmitted(false);
+              }}
+            >
+              ✕
+            </button>
+
+            {!consultSubmitted ? (
+              <>
+                <h3 style={{ fontSize: "1.35rem", fontWeight: 700, marginBottom: "8px" }}>
+                  Ask For Help
+                </h3>
+                <p style={{ fontSize: "0.9rem", color: "#6C757D", marginBottom: "20px" }}>
+                  Tell us what kind of furniture or space you want to furnish, and our design team will contact you.
+                </p>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setConsultSubmitted(true);
+                  }}
+                  style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+                >
+                  <input
+                    type="text"
+                    required
+                    placeholder="Your Name"
+                    defaultValue={user?.name || ""}
+                    style={{
+                      padding: "12px 14px",
+                      borderRadius: "8px",
+                      border: "1px solid #CCC",
+                      fontSize: "0.92rem",
+                      outline: "none",
+                    }}
+                  />
+                  <input
+                    type="tel"
+                    required
+                    placeholder="Phone Number"
+                    defaultValue={user?.phone || ""}
+                    style={{
+                      padding: "12px 14px",
+                      borderRadius: "8px",
+                      border: "1px solid #CCC",
+                      fontSize: "0.92rem",
+                      outline: "none",
+                    }}
+                  />
+                  <textarea
+                    rows="3"
+                    required
+                    placeholder="E.g., Looking for a living room sofa and dining set for 6 months..."
+                    style={{
+                      padding: "12px 14px",
+                      borderRadius: "8px",
+                      border: "1px solid #CCC",
+                      fontSize: "0.92rem",
+                      outline: "none",
+                      resize: "none",
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    style={{
+                      backgroundColor: "#E24B36",
+                      color: "#fff",
+                      padding: "12px",
+                      borderRadius: "8px",
+                      border: "none",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      marginTop: "6px",
+                    }}
+                  >
+                    Submit Request
+                  </button>
+                </form>
+              </>
+            ) : (
+              <div style={{ textAlign: "center", padding: "16px 0" }}>
+                <div style={{ fontSize: "2.4rem", marginBottom: "12px" }}>🎉</div>
+                <h3 style={{ fontSize: "1.25rem", fontWeight: 700, marginBottom: "8px" }}>
+                  Thank you!
+                </h3>
+                <p style={{ fontSize: "0.9rem", color: "#6C757D", marginBottom: "20px" }}>
+                  Your request has been received. Our team will reach out to you within 24 hours.
+                </p>
+                <button
+                  onClick={() => {
+                    setConsultModalOpen(false);
+                    setConsultSubmitted(false);
+                  }}
+                  style={{
+                    backgroundColor: "#1A1D20",
+                    color: "#fff",
+                    padding: "10px 24px",
+                    borderRadius: "6px",
+                    border: "none",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  Done
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
-  //this component is getting too big, can split into smaller ones if needed in future
 }
