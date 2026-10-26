@@ -1,6 +1,5 @@
 // frontend/src/hooks/useItems.js
-import { useState, useEffect, useCallback } from "react";
-import { supabase } from "../lib/supabaseClient";
+import { useState, useCallback } from "react";
 
 const SEED_ITEMS = [
   { id: "11111111-1111-1111-1111-111111111111", title: "Black Relax ST Chair & Table", category: "Furniture & Living", price: 150, deposit: 600, city: "Pune", condition: "Pristine", description: "Modern black metal framed relaxed dining chairs with stylish bistro table. Weather resistant and ergonomic.", is_active: true, rating: 5.0, rent_count: 42, image_url: "/images/chair_black_relax.jpg" },
@@ -16,58 +15,38 @@ export function useItems() {
   const [items, setItems] = useState(() => {
     try {
       const cached = localStorage.getItem("qr_items_cache");
-      return cached ? JSON.parse(cached) : SEED_ITEMS;
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        const sanitized = parsed.map((item) => {
+          let img = item.image_url || item.image;
+          if (!img || typeof img !== "string" || (!img.startsWith("/images/") && !img.startsWith("data:"))) {
+            const match = SEED_ITEMS.find((s) => s.id === item.id || s.title === item.title);
+            img = match ? match.image_url : "/images/chair_black_relax.jpg";
+          }
+          return { ...item, image_url: img };
+        });
+        localStorage.setItem("qr_items_cache", JSON.stringify(sanitized));
+        return sanitized;
+      }
+      localStorage.setItem("qr_items_cache", JSON.stringify(SEED_ITEMS));
+      return SEED_ITEMS;
     } catch {
       return SEED_ITEMS;
     }
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const loading = false;
+  const error = null;
 
-  const fetchItems = useCallback(async () => {
-    setLoading(true);
+  const fetchItems = useCallback(() => {
     try {
-      const { data, error: fetchErr } = await supabase
-        .from("items")
-        .select("*")
-        .eq("is_active", true)
-        .order("created_at", { ascending: false });
-
-      if (fetchErr) throw fetchErr;
-
-      if (data && data.length > 0) {
-        // Map daily_rate_paise to price in rupees
-        const normalized = data.map((it) => ({
-          ...it,
-          price: it.daily_rate_paise ? Math.round(it.daily_rate_paise / 100) : it.price || 100,
-          deposit: it.security_deposit_paise ? Math.round(it.security_deposit_paise / 100) : it.deposit || 0,
-        }));
-        setItems(normalized);
-        localStorage.setItem("qr_items_cache", JSON.stringify(normalized));
+      const cached = localStorage.getItem("qr_items_cache");
+      if (cached) {
+        setItems(JSON.parse(cached));
       }
     } catch (err) {
-      console.warn("Using local items cache:", err.message);
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      console.warn("Error reading local items:", err);
     }
   }, []);
-
-  useEffect(() => {
-    fetchItems();
-
-    // Real-time subscription to public.items
-    const channel = supabase
-      .channel("public:items")
-      .on("postgres_changes", { event: "*", schema: "public", table: "items" }, () => {
-        fetchItems();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [fetchItems]);
 
   const addItem = async (itemData) => {
     const newItem = {
@@ -77,19 +56,21 @@ export function useItems() {
       is_active: true,
       price: Number(itemData.price),
       deposit: Number(itemData.deposit || 0),
-      daily_rate_paise: Math.round(Number(itemData.price) * 100),
-      security_deposit_paise: Math.round(Number(itemData.deposit || 0) * 100),
       rent_count: 0,
       rating: 5.0,
+      image_url: itemData.image_url || "/images/chair_black_relax.jpg",
     };
 
-    setItems((prev) => [newItem, ...prev]);
-    try {
-      localStorage.setItem("qr_items_cache", JSON.stringify([newItem, ...items]));
-      await supabase.from("items").insert(newItem);
-    } catch {
-      // Local fallback preserved
-    }
+    setItems((prev) => {
+      const updated = [newItem, ...prev];
+      try {
+        localStorage.setItem("qr_items_cache", JSON.stringify(updated));
+      } catch (err) {
+        console.warn("Error caching item:", err);
+      }
+      return updated;
+    });
+
     return newItem;
   };
 

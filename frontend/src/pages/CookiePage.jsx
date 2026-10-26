@@ -21,7 +21,7 @@ export default function CookiePage() {
           <div className="bg-white rounded-card border border-brand-border p-6 sm:p-8 shadow-soft">
             <h2 className="text-lg font-bold mb-3">1. Essential Authentication Cookies</h2>
             <p className="text-xs text-brand-muted leading-relaxed">
-              These cookies and PKCE session tokens are strictly necessary to authenticate your account and ensure secure API calls to Supabase.
+              Local storage items are used to maintain your session credentials and provide immediate offline-capable access.
             </p>
           </div>
 

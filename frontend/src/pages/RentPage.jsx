@@ -234,6 +234,10 @@ export default function RentPage({
               <img
                 src={selectedItem.image_url || selectedItem.image || "/images/chair_black_relax.jpg"}
                 alt={selectedItem.title}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = "/images/chair_black_relax.jpg";
+                }}
                 className="w-full h-full object-cover"
               />
               <span className="absolute top-4 left-4 bg-brand-dark/80 text-white text-xs font-bold px-3 py-1 rounded-md backdrop-blur-sm">

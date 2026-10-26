@@ -173,6 +173,10 @@ export default function Hero({ items, onSelectItem, onToggleWishlist, wishlist =
             <img
               src="/images/lifestyle_living_room.jpg"
               alt="Scandinavian Living Room Lifestyle"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "/images/chair_black_relax.jpg";
+              }}
               className="w-full h-[400px] object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6">
@@ -249,7 +253,15 @@ export default function Hero({ items, onSelectItem, onToggleWishlist, wishlist =
                 className="bg-white rounded-card overflow-hidden border border-brand-border shadow-soft flex flex-col"
               >
                 <div className="h-44 overflow-hidden bg-gray-100">
-                  <img src={blog.image} alt={blog.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                  <img
+                    src={blog.image}
+                    alt={blog.title}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "/images/chair_black_relax.jpg";
+                    }}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  />
                 </div>
                 <div className="p-5 flex flex-col flex-grow">
                   <div className="flex items-center justify-between text-xs text-brand-muted mb-2">

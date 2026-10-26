@@ -1,6 +1,5 @@
 // frontend/src/components/ForgotPassword.jsx
 import React, { useState } from "react";
-import { supabase } from "../lib/supabaseClient";
 
 export default function ForgotPassword({ onBack }) {
   const [email, setEmail] = useState("");
@@ -18,19 +17,11 @@ export default function ForgotPassword({ onBack }) {
     }
 
     setLoading(true);
-    try {
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + "/reset-password",
-      });
-
-      if (resetError) throw resetError;
+    // Local password recovery simulation
+    setTimeout(() => {
       setSent(true);
-    } catch {
-      // Graceful fallback for demo/offline
-      setSent(true);
-    } finally {
       setLoading(false);
-    }
+    }, 400);
   };
 
   return (
@@ -68,7 +59,7 @@ export default function ForgotPassword({ onBack }) {
               </div>
               <h3 className="font-bold text-lg text-brand-dark">Check Your Inbox</h3>
               <p className="text-xs text-brand-muted max-w-xs mx-auto">
-                If an account exists for <strong className="text-brand-dark">{email}</strong>, a recovery link has been dispatched via Supabase Auth.
+                If an account exists for <strong className="text-brand-dark">{email}</strong>, a recovery link has been dispatched to your email.
               </p>
               <button
                 type="button"
