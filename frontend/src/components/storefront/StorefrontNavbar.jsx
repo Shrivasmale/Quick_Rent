@@ -1,6 +1,6 @@
-// frontend/src/components/storefront/StorefrontNavbar.jsx
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import ThemeToggle from "../ThemeToggle";
 
 export default function StorefrontNavbar({
   currentPage,
@@ -68,7 +68,12 @@ export default function StorefrontNavbar({
         </nav>
 
         {/* Right Search Input & Action Icons */}
-        <div className="flex items-center gap-4 flex-1 lg:flex-initial justify-end">
+        <div className="flex items-center gap-3 md:gap-4 flex-1 lg:flex-initial justify-end">
+          {/* Prominent Theme Switcher */}
+          <div className="hidden sm:block">
+            <ThemeToggle variant="segmented" />
+          </div>
+
           {/* Elongated Search Bar from image */}
           <form
             onSubmit={handleSearchSubmit}
@@ -183,6 +188,10 @@ export default function StorefrontNavbar({
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-[#E8E4DC] bg-white px-6 py-4 flex flex-col gap-3">
+          <div className="sm:hidden flex items-center justify-between pb-2 border-b border-gray-100">
+            <span className="text-xs font-semibold text-gray-500">Theme View:</span>
+            <ThemeToggle variant="segmented" />
+          </div>
           <form onSubmit={handleSearchSubmit} className="flex sm:hidden items-center relative mb-2">
             <span className="absolute left-3.5 text-gray-400 text-sm">🔍</span>
             <input

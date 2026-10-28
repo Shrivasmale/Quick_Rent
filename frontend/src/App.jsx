@@ -22,6 +22,7 @@ import { useLocalStorage } from "./hooks/useLocalStorage";
 import StorefrontTopBar from "./components/storefront/StorefrontTopBar";
 import StorefrontNavbar from "./components/storefront/StorefrontNavbar";
 import StorefrontFooter from "./components/storefront/StorefrontFooter";
+import ThemeToggle from "./components/ThemeToggle";
 
 export default function App() {
   const { user, updateUserRole } = useAuth();
@@ -170,18 +171,9 @@ export default function App() {
           <Footer navigate={navigate} />
         )}
 
-        {/* Floating Theme Switcher Pill */}
-        <div className="fixed bottom-5 right-5 z-50">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#0E2721] text-white shadow-lg hover:shadow-xl border border-white/20 text-xs font-semibold hover:bg-[#163A32] transition-all transform hover:-translate-y-0.5"
-            title="Toggle between Storefront and Classic UI themes"
-          >
-            <span>{isStorefront ? "🌿" : "⚡"}</span>
-            <span>Theme: {isStorefront ? "Storefront" : "Classic"}</span>
-            <span className="text-[10px] opacity-70 underline ml-1">Switch</span>
-          </button>
+        {/* Floating Theme Switcher Widget */}
+        <div className="fixed bottom-5 right-5 z-50 bg-white/95 backdrop-blur-md rounded-full shadow-2xl p-1 border border-gray-200/80 flex items-center">
+          <ThemeToggle variant="segmented" />
         </div>
       </div>
     </ErrorBoundary>
