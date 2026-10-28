@@ -1,9 +1,11 @@
 // frontend/src/components/Navbar.jsx
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar({ currentPage, navigate, openAuth, wishlistCount = 0 }) {
   const { user, handleLogout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -67,6 +69,20 @@ export default function Navbar({ currentPage, navigate, openAuth, wishlistCount 
 
       {/* Right Actions & Auth */}
       <div className="flex items-center gap-4">
+        {/* Theme Switcher Button */}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className={`hidden sm:flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors ${
+            isTransparent
+              ? "bg-white/10 hover:bg-white/20 border-white/20 text-white"
+              : "bg-[#0E2721] hover:bg-[#163A32] border-[#0E2721] text-white"
+          }`}
+          title="Switch to Storefront Theme"
+        >
+          <span>🌿 Storefront Theme</span>
+        </button>
+
         {/* Wishlist Link */}
         <button
           type="button"
