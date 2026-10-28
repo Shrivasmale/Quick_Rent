@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar({ currentPage, navigate, openAuth, wishlistCount = 0 }) {
   const { user, handleLogout } = useAuth();
@@ -68,20 +69,11 @@ export default function Navbar({ currentPage, navigate, openAuth, wishlistCount 
       </nav>
 
       {/* Right Actions & Auth */}
-      <div className="flex items-center gap-4">
-        {/* Theme Switcher Button */}
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className={`hidden sm:flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors ${
-            isTransparent
-              ? "bg-white/10 hover:bg-white/20 border-white/20 text-white"
-              : "bg-[#0E2721] hover:bg-[#163A32] border-[#0E2721] text-white"
-          }`}
-          title="Switch to Storefront Theme"
-        >
-          <span>🌿 Storefront Theme</span>
-        </button>
+      <div className="flex items-center gap-3 sm:gap-4">
+        {/* Prominent Theme Switcher Segment */}
+        <div className="hidden sm:block">
+          <ThemeToggle variant="segmented" />
+        </div>
 
         {/* Wishlist Link */}
         <button
@@ -177,6 +169,10 @@ export default function Navbar({ currentPage, navigate, openAuth, wishlistCount 
       {/* Mobile Drawer */}
       {menuOpen && (
         <div className="md:hidden fixed top-[72px] left-0 right-0 bg-white border-b border-brand-border p-6 shadow-card flex flex-col gap-4 text-brand-dark z-50">
+          <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+            <span className="text-xs font-semibold text-gray-500">Theme View:</span>
+            <ThemeToggle variant="segmented" />
+          </div>
           {links.map((link) => (
             <button
               key={link.page}

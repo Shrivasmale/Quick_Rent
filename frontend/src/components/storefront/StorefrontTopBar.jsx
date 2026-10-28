@@ -32,10 +32,10 @@ export default function StorefrontTopBar() {
           <button
             type="button"
             onClick={toggleTheme}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/15 hover:bg-white/25 text-white font-medium text-[11px] transition-colors"
-            title="Switch between Storefront UI and Classic QuickRent UI"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white font-medium text-[11px] transition-colors shadow-sm"
+            title="Switch between Storefront UI (New) and Classic UI (Previous)"
           >
-            <span>{theme === "storefront" ? "⚡ Classic UI" : "🌿 Storefront UI"}</span>
+            <span>{theme === "storefront" ? "⚡ Switch to Classic UI" : "🌿 Switch to Storefront UI"}</span>
           </button>
         </div>
       </div>
